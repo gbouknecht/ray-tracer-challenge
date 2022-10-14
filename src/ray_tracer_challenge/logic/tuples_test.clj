@@ -1,8 +1,8 @@
 (ns ray-tracer-challenge.logic.tuples-test
-  (:require [clojure.math.numeric-tower :refer [sqrt]])
-  (:require [clojure.test :refer :all])
-  (:require [ray-tracer-challenge.logic.tuples :refer :all])
-  (:require [ray-tracer-challenge.test.test-utils :refer :all]))
+  (:require [clojure.math.numeric-tower :refer [sqrt]]
+            [clojure.test :refer :all]
+            [ray-tracer-challenge.logic.tuples :refer :all]
+            [ray-tracer-challenge.test.test-utils :refer :all]))
 
 (deftest about-tuples
 
