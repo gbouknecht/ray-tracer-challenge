@@ -20,8 +20,8 @@
       (println (format "start position: %s" (format-xyz position)))
       (println (format "start velocity: %s" (format-xyz velocity)))
       (println (str/join (repeat 80 "-")))
-      (doseq [[idx position] (map-indexed vector (fire environment projectile))]
-        (println (format "%3d %s" (inc idx) (format-xyz position)))))))
+      (doseq [[index position] (map-indexed vector (fire environment projectile))]
+        (println (format "%3d %s" (inc index) (format-xyz position)))))))
 
 (defn -main []
   (fire-and-print {:gravity (vektor 0 -0.1 0) :wind (vektor -0.01 0 0)}
