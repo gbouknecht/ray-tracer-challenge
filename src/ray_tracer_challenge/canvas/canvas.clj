@@ -5,7 +5,11 @@
 (defn canvas [width height] {:width width :height height :pixels (vec (repeat (* width height) [0 0 0]))})
 (defn- index-of-pixel-at [canvas x y] (+ x (* y (:width canvas))))
 (defn pixel-at [canvas x y] ((:pixels canvas) (index-of-pixel-at canvas x y)))
-(defn write-pixel [canvas x y color] (assoc canvas :pixels (assoc (:pixels canvas) (index-of-pixel-at canvas x y) color)))
+(defn write-pixel [canvas x y color]
+  (if (and (<= 0 x (dec (:width canvas)))
+           (<= 0 y (dec (:height canvas))))
+    (assoc canvas :pixels (assoc (:pixels canvas) (index-of-pixel-at canvas x y) color))
+    canvas))
 
 (defn- split-at-70-chars [s]
   (let [max-line-length 70]

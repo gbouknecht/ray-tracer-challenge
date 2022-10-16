@@ -1,4 +1,4 @@
-(ns ray-tracer-challenge.putting-it-together.chapter-1-firing-projectiles
+(ns ray-tracer-challenge.putting-it-together.chapter-01-firing-projectiles
   (:require [clojure.string :as str]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 

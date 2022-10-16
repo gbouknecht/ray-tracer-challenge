@@ -4,6 +4,8 @@
             [ray-tracer-challenge.canvas.canvas :refer :all]))
 
 (defn- all-coords [canvas] (for [x (range (:width canvas)) y (range (:height canvas))] [x y]))
+(defn- black-pixel-at? [canvas [x y]] (is (= (pixel-at canvas x y) [0 0 0])))
+(defn- black-canvas? [canvas] (every? (partial black-pixel-at? canvas) (all-coords canvas)))
 
 (deftest about-canvas
 
@@ -12,15 +14,29 @@
     (let [canvas (canvas 10 20)]
       (is (= (:width canvas) 10))
       (is (= (:height canvas) 20))
-      (letfn [(black-pixel-at? [[x y]] (is (= (pixel-at canvas x y) [0 0 0])))]
-        (every? black-pixel-at? (all-coords canvas)))))
+      (black-canvas? canvas)))
 
   (testing
-    "should be able to write pixel"
-    (let [canvas1 (canvas 10 20)
-          red [1 0 1]
-          canvas2 (write-pixel canvas1 2 3 red)]
-      (is (= (pixel-at canvas2 2 3) red)))))
+    "should be able to write pixels"
+    (let [red [1 0 0]
+          green [0 1 0]
+          blue [0 0 1]
+          canvas (-> (canvas 10 20)
+                     (write-pixel 0 0 red)
+                     (write-pixel 2 3 green)
+                     (write-pixel 9 19 blue))]
+      (is (= (pixel-at canvas 0 0) red))
+      (is (= (pixel-at canvas 2 3) green))
+      (is (= (pixel-at canvas 9 19) blue))))
+
+  (testing
+    "should ignore writing pixels outside bound"
+    (let [canvas (canvas 10 20)
+          test-pixel-at (fn [x y] (black-canvas? (write-pixel canvas x y [1 1 1])))]
+      (test-pixel-at -1 0)
+      (test-pixel-at 0 -1)
+      (test-pixel-at (:width canvas) 0)
+      (test-pixel-at 0 (:height canvas)))))
 
 (deftest about-canvas-ppm
 
