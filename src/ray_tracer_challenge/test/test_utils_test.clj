@@ -1,6 +1,7 @@
 (ns ray-tracer-challenge.test.test-utils-test
-  (:require [clojure.test :refer :all])
-  (:require [ray-tracer-challenge.test.test-utils :refer :all]))
+  (:require [clojure.test :refer :all]
+            [ray-tracer-challenge.logic.matrices :refer :all]
+            [ray-tracer-challenge.test.test-utils :refer :all]))
 
 (deftest about-roughly-assert-expr
 
@@ -42,4 +43,24 @@
                [[4.3 -4.2] [3.1 1.0]] [[4.3 -4.2] [3.10001 1.0]]
                [[4.3 -4.2] [3.1 1.0]] [[4.3 -4.2] [3.1 0.999989]]
                [[1 2] [3 4]] [[1 2] [3]]
-               [[1 2] [3]] [[1 2] [3 4]])))
+               [[1 2] [3]] [[1 2] [3 4]]))
+
+  (testing
+    "should be able to compare matrices"
+    (is (roughly (matrix [[1 2 3 4]
+                          [5 6 7 8]
+                          [9 8 7 6]
+                          [5 4 3 2]])
+                 (matrix [[1 2 3 4]
+                          [5 6 7 8]
+                          [9 8 7 6]
+                          [5 4 3 2]])))
+    (is (not-roughly (matrix [[1 2 3 4]
+                              [5 6 7 8]
+                              [9 8 7 6]
+                              [5 4 3 2]])
+                     (matrix [[2 3 4 5]
+                              [6 7 8 9]
+                              [8 7 6 5]
+                              [4 3 2 1]])))))
+
