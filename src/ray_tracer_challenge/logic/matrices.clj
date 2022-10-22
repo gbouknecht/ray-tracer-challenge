@@ -6,6 +6,7 @@
   (assert (apply = (map count values)) "rows should have same length")
   {:row-count (count values) :col-count (count (first values)) :values (vec (flatten values))})
 (def identity-matrix (matrix [[1 0 0 0] [0 1 0 0] [0 0 1 0] [0 0 0 1]]))
+(defn matrix? [x] (and (map? x) (= (set (keys x)) (set (keys identity-matrix)))))
 (defn- index-of-value-at [matrix row col] (+ (* row (:col-count matrix)) col))
 (defn value-at [matrix row col] ((:values matrix) (index-of-value-at matrix row col)))
 (defn- row-at [matrix row]
@@ -44,8 +45,7 @@
         col-count (:col-count matrix)]
     {:row-count (dec row-count)
      :col-count (dec col-count)
-     :values    (vec (flatten (for [row (range 0 row-count)
-                                    col (range 0 col-count)
+     :values    (vec (flatten (for [row (range 0 row-count) col (range 0 col-count)
                                     :when (and (not= row row-to-remove) (not= col col-to-remove))]
                                 (value-at matrix row col))))}))
 (defn minor [matrix row col] (determinant (submatrix matrix row col)))
@@ -57,14 +57,20 @@
         determinant (determinant matrix)]
     {:row-count row-count
      :col-count col-count
-     :values    (vec (flatten (for [col (range 0 col-count) row (range 0 row-count)] (/ (cofactor matrix row col) determinant))))}))
+     :values    (vec (flatten (for [col (range 0 col-count) row (range 0 row-count)]
+                                (/ (cofactor matrix row col) determinant))))}))
 
 (defn str-matrix [matrix]
-  (str/join
-    "\n"
-    (for [row (range 0 (:row-count matrix))]
-      (let [row-prefix (if (zero? row) "[[" " [")
-            row-suffix (if (= row (dec (:row-count matrix))) "]]" "]")]
-        (apply format (str row-prefix (str/join " " (repeat (:col-count matrix) "%11.5f")) row-suffix)
-               (map double (row-at matrix row)))))))
+  (let [col-count (:col-count matrix)
+        formatted-cols (for [col (range 0 col-count)]
+                         (let [formatted (map #(format "%.5f" (double %)) (col-at matrix col))
+                               max-width (apply max (map count formatted))]
+                           (map #(format (str "%" max-width "s") %) formatted)))]
+    (str/join
+      "\n"
+      (for [row (range 0 (:row-count matrix))]
+        (let [row-prefix (if (zero? row) "[[" " [")
+              row-suffix (if (= row (dec (:row-count matrix))) "]]" "]")
+              formatted-row (map #(-> formatted-cols (nth %) (nth row)) (range 0 col-count))]
+          (str row-prefix (str/join " " formatted-row) row-suffix))))))
 (defn println-matrix [matrix] (println (str-matrix matrix)))

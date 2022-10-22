@@ -35,7 +35,18 @@
                           [0 1 1]])]
       (is (roughly (value-at matrix 0 0) -3))
       (is (roughly (value-at matrix 1 1) -2))
-      (is (roughly (value-at matrix 2 2) 1)))))
+      (is (roughly (value-at matrix 2 2) 1))))
+
+  (testing
+    "should be able to check if something is a matrix"
+    (let [matrix (matrix [[1 2 3] [4 5 6]])]
+      (is (matrix? matrix))
+      (is (not (matrix? (dissoc matrix :row-count))))
+      (is (not (matrix? (dissoc matrix :col-count))))
+      (is (not (matrix? (dissoc matrix :values)))))
+    (is (not (matrix? [[1 2 3] [4 5 6]])))
+    (is (not (matrix? [1 2 3 4 5 6])))
+    (is (not (matrix? 1)))))
 
 (deftest about-matrix-operations
 
