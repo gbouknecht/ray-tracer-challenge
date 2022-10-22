@@ -1,5 +1,6 @@
 (ns ray-tracer-challenge.logic.matrices
-  (:require [ray-tracer-challenge.logic.tuples :refer :all]))
+  (:require [clojure.string :as str]
+            [ray-tracer-challenge.logic.tuples :refer :all]))
 
 (defn matrix [values]
   (assert (apply = (map count values)) "rows should have same length")
@@ -56,4 +57,14 @@
         determinant (determinant matrix)]
     {:row-count row-count
      :col-count col-count
-     :values (vec (flatten (for [col (range 0 col-count) row (range 0 row-count)] (/ (cofactor matrix row col) determinant))))}))
+     :values    (vec (flatten (for [col (range 0 col-count) row (range 0 row-count)] (/ (cofactor matrix row col) determinant))))}))
+
+(defn str-matrix [matrix]
+  (str/join
+    "\n"
+    (for [row (range 0 (:row-count matrix))]
+      (let [row-prefix (if (zero? row) "[[" " [")
+            row-suffix (if (= row (dec (:row-count matrix))) "]]" "]")]
+        (apply format (str row-prefix (str/join " " (repeat (:col-count matrix) "%11.5f")) row-suffix)
+               (map double (row-at matrix row)))))))
+(defn println-matrix [matrix] (println (str-matrix matrix)))
