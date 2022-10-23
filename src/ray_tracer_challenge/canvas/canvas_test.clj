@@ -4,7 +4,7 @@
             [ray-tracer-challenge.canvas.canvas :refer :all]))
 
 (defn- all-coords [canvas] (for [x (range (:width canvas)) y (range (:height canvas))] [x y]))
-(defn- black-pixel-at? [canvas [x y]] (is (= (pixel-at canvas x y) [0 0 0])))
+(defn- black-pixel-at? [canvas [x y]] (is (= [0 0 0] (pixel-at canvas x y))))
 (defn- black-canvas? [canvas] (every? (partial black-pixel-at? canvas) (all-coords canvas)))
 
 (deftest about-canvas
@@ -12,8 +12,8 @@
   (testing
     "should initially create black canvas"
     (let [canvas (canvas 10 20)]
-      (is (= (:width canvas) 10))
-      (is (= (:height canvas) 20))
+      (is (= 10 (:width canvas)))
+      (is (= 20 (:height canvas)))
       (black-canvas? canvas)))
 
   (testing
@@ -25,9 +25,9 @@
                      (write-pixel 0 0 red)
                      (write-pixel 2 3 green)
                      (write-pixel 9 19 blue))]
-      (is (= (pixel-at canvas 0 0) red))
-      (is (= (pixel-at canvas 2 3) green))
-      (is (= (pixel-at canvas 9 19) blue))))
+      (is (= red (pixel-at canvas 0 0)))
+      (is (= green (pixel-at canvas 2 3)))
+      (is (= blue (pixel-at canvas 9 19)))))
 
   (testing
     "should ignore writing pixels outside bound"
@@ -43,10 +43,8 @@
   (testing
     "should construct header"
     (let [ppm (canvas-to-ppm (canvas 5 3))]
-      (is (= (take 3 (str/split-lines ppm))
-             ["P3"
-              "5 3"
-              "255"]))))
+      (is (= ["P3" "5 3" "255"]
+             (take 3 (str/split-lines ppm))))))
 
   (testing
     "should construct pixel data"
@@ -55,10 +53,10 @@
                   (write-pixel 2 1 [0 0.5 0])
                   (write-pixel 4 2 [-0.5 0 1])
                   (canvas-to-ppm))]
-      (is (= (drop 3 (str/split-lines ppm))
-             ["255 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+      (is (= ["255 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
               "0 0 0 0 0 0 0 128 0 0 0 0 0 0 0"
-              "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255"]))))
+              "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255"]
+             (drop 3 (str/split-lines ppm))))))
 
   (testing
     "should split long lines"
@@ -67,11 +65,11 @@
           ppm (-> (canvas 10 2)
                   (set-every-pixel)
                   (canvas-to-ppm))]
-      (is (= (drop 3 (str/split-lines ppm))
-             ["255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204"
+      (is (= ["255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204"
               "153 255 204 153 255 204 153 255 204 153 255 204 153"
               "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204"
-              "153 255 204 153 255 204 153 255 204 153 255 204 153"]))))
+              "153 255 204 153 255 204 153 255 204 153 255 204 153"]
+             (drop 3 (str/split-lines ppm))))))
 
   (testing
     "should be terminated by a newline"
