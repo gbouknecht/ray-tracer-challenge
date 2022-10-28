@@ -1,6 +1,7 @@
 (ns ray-tracer-challenge.test.test-utils
   (:require [clojure.test :refer :all]
-            [ray-tracer-challenge.logic.matrices :refer :all]))
+            [ray-tracer-challenge.logic.matrices :refer :all]
+            [ray-tracer-challenge.logic.rays :refer :all]))
 
 (declare roughly not-roughly)
 
@@ -10,6 +11,7 @@
   (cond (and (matrix? x) (matrix? y)) (diff-smaller-than-epsilon? (:values x) (:values y))
         (and (vector? x) (vector? y)) (and (= (count x) (count y)) (every? #(apply diff-smaller-than-epsilon? %) (map vector x y)))
         (and (number? x) (number? y)) (< (abs (- x y)) epsilon)
+        (and (intersection? x) (intersection? y)) (and (diff-smaller-than-epsilon? (:t x) (:t y)) (= (:object x) (:object y)))
         :else (throw (IllegalArgumentException. (format "Arguments not supported: %s (%s), %s (%s)" x (type x) y (type y))))))
 
 (defn format-value [value] (if (matrix? value) (str-matrix value) (str value)))
