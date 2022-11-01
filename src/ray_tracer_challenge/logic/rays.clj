@@ -8,8 +8,6 @@
 (defn transform [ray matrix]
   {:origin    (multiply-matrix-by-tuple matrix (:origin ray))
    :direction (multiply-matrix-by-tuple matrix (:direction ray))})
-(defn sphere [] {:uuid (random-uuid) :transform identity-matrix})
-(defn set-transform [sphere transform] (assoc sphere :transform transform))
 (defn intersection [t object] {:t t :object object})
 (defn intersection? [x] (and (map? x) (= (set (keys x)) #{:t :object})))
 (defn intersect [sphere ray]

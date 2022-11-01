@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
+            [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
             [ray-tracer-challenge.test.test-utils :refer :all]))
@@ -79,13 +80,6 @@
           ray2 (transform ray1 matrix)]
       (is (roughly (point 2 6 12) (:origin ray2)))
       (is (roughly (vektor 0 3 0) (:direction ray2)))))
-
-  (testing "should be able to associate a transformation to a sphere"
-    (let [sphere1 (sphere)
-          transform (translation 2 3 4)
-          sphere2 (set-transform sphere1 transform)]
-      (is (roughly identity-matrix (:transform sphere1)))
-      (is (roughly transform (:transform sphere2)))))
 
   (testing "should be able to intersect a scaled sphere"
     (let [ray (ray (point 0 0 -5) (vektor 0 0 1))
