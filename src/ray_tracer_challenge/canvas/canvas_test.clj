@@ -9,15 +9,13 @@
 
 (deftest about-canvas
 
-  (testing
-    "should initially create black canvas"
+  (testing "should initially create black canvas"
     (let [canvas (canvas 10 20)]
       (is (= 10 (:width canvas)))
       (is (= 20 (:height canvas)))
       (black-canvas? canvas)))
 
-  (testing
-    "should be able to write pixels"
+  (testing "should be able to write pixels"
     (let [red [1 0 0]
           green [0 1 0]
           blue [0 0 1]
@@ -29,8 +27,7 @@
       (is (= green (pixel-at canvas 2 3)))
       (is (= blue (pixel-at canvas 9 19)))))
 
-  (testing
-    "should ignore writing pixels outside bound"
+  (testing "should ignore writing pixels outside bound"
     (let [canvas (canvas 10 20)
           test-pixel-at (fn [x y] (black-canvas? (write-pixel canvas x y [1 1 1])))]
       (test-pixel-at -1 0)
@@ -40,14 +37,12 @@
 
 (deftest about-canvas-ppm
 
-  (testing
-    "should construct header"
+  (testing "should construct header"
     (let [ppm (canvas-to-ppm (canvas 5 3))]
       (is (= ["P3" "5 3" "255"]
              (take 3 (str/split-lines ppm))))))
 
-  (testing
-    "should construct pixel data"
+  (testing "should construct pixel data"
     (let [ppm (-> (canvas 5 3)
                   (write-pixel 0 0 [1.5 0 0])
                   (write-pixel 2 1 [0 0.5 0])
@@ -58,8 +53,7 @@
               "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255"]
              (drop 3 (str/split-lines ppm))))))
 
-  (testing
-    "should split long lines"
+  (testing "should split long lines"
     (let [set-pixel (fn [canvas [x y]] (write-pixel canvas x y [1 0.8 0.6]))
           set-every-pixel (fn [canvas] (reduce set-pixel canvas (all-coords canvas)))
           ppm (-> (canvas 10 2)
@@ -71,6 +65,5 @@
               "153 255 204 153 255 204 153 255 204 153 255 204 153"]
              (drop 3 (str/split-lines ppm))))))
 
-  (testing
-    "should be terminated by a newline"
+  (testing "should be terminated by a newline"
     (is (str/ends-with? (canvas-to-ppm (canvas 5 3)) "\n"))))

@@ -5,8 +5,7 @@
 
 (deftest about-matrices
 
-  (testing
-    "should be able to create 4x4 matrix"
+  (testing "should be able to create 4x4 matrix"
     (let [matrix (matrix [[1 2 3 4]
                           [5.5 6.5 7.5 8.5]
                           [9 10 11 12]
@@ -19,8 +18,7 @@
       (is (roughly 13.5 (value-at matrix 3 0)))
       (is (roughly 15.5 (value-at matrix 3 2)))))
 
-  (testing
-    "should be able to create 2x2 matrix"
+  (testing "should be able to create 2x2 matrix"
     (let [matrix (matrix [[-3 5]
                           [1 -2]])]
       (is (roughly -3 (value-at matrix 0 0)))
@@ -28,8 +26,7 @@
       (is (roughly 1 (value-at matrix 1 0)))
       (is (roughly -2 (value-at matrix 1 1)))))
 
-  (testing
-    "should be able to create 3x3 matrix"
+  (testing "should be able to create 3x3 matrix"
     (let [matrix (matrix [[-3 5 0]
                           [1 -2 -7]
                           [0 1 1]])]
@@ -37,8 +34,7 @@
       (is (roughly -2 (value-at matrix 1 1)))
       (is (roughly 1 (value-at matrix 2 2)))))
 
-  (testing
-    "should be able to check if something is a matrix"
+  (testing "should be able to check if something is a matrix"
     (let [matrix (matrix [[1 2 3] [4 5 6]])]
       (is (matrix? matrix))
       (is (not (matrix? (dissoc matrix :row-count))))
@@ -50,8 +46,7 @@
 
 (deftest about-matrix-operations
 
-  (testing
-    "should be able to multiply two matrices"
+  (testing "should be able to multiply two matrices"
     (is (roughly (matrix [[20 22 50 48]
                           [44 54 114 108]
                           [40 58 110 102]
@@ -65,8 +60,7 @@
                                              [4 3 6 5]
                                              [1 2 7 8]])))))
 
-  (testing
-    "should be able to multiply matrix by a tuple"
+  (testing "should be able to multiply matrix by a tuple"
     (is (roughly [18 24 33 1]
                  (multiply-matrix-by-tuple (matrix [[1 2 3 4]
                                                     [2 4 4 2]
@@ -74,21 +68,18 @@
                                                     [0 0 0 1]])
                                            [1 2 3 1]))))
 
-  (testing
-    "should get same matrix when multiplied by identity matrix"
+  (testing "should get same matrix when multiplied by identity matrix"
     (let [matrix (matrix [[0 1 2 4]
                           [1 2 4 8]
                           [2 4 8 16]
                           [4 8 16 32]])]
       (is (roughly matrix (multiply-matrices matrix identity-matrix)))))
 
-  (testing
-    "should get same tuple when identity matrix is multiplied by tuple"
+  (testing "should get same tuple when identity matrix is multiplied by tuple"
     (let [tuple [1 2 3 4]]
       (is (roughly tuple (multiply-matrix-by-tuple identity-matrix tuple)))))
 
-  (testing
-    "should be able to transpose matrix"
+  (testing "should be able to transpose matrix"
     (is (roughly (matrix [[0 9 1 0]
                           [9 8 8 0]
                           [3 0 5 5]
@@ -98,16 +89,13 @@
                                      [1 8 5 3]
                                      [0 0 5 8]])))))
 
-  (testing
-    "should get identity matrix when transposing identity matrix"
+  (testing "should get identity matrix when transposing identity matrix"
     (is (roughly identity-matrix (transpose identity-matrix))))
 
-  (testing
-    "should be able to calculate determinant of 2x2 matrix"
+  (testing "should be able to calculate determinant of 2x2 matrix"
     (is (roughly 17 (determinant (matrix [[1 5] [-3 2]])))))
 
-  (testing
-    "should be able to get submatrix"
+  (testing "should be able to get submatrix"
     (is (roughly (matrix [[-3 2]
                           [0 6]])
                  (submatrix (matrix [[1 5 0]
@@ -121,8 +109,7 @@
                                      [-1 0 8 2]
                                      [-7 1 -1 1]]) 2 1))))
 
-  (testing
-    "should be able to calculate minor of 3x3 matrix"
+  (testing "should be able to calculate minor of 3x3 matrix"
     (let [matrix (matrix [[3 5 0]
                           [2 -1 -7]
                           [6 -1 5]])
@@ -130,8 +117,7 @@
       (is (roughly 25 (determinant submatrix)))
       (is (roughly 25 (minor matrix 1 0)))))
 
-  (testing
-    "should be able to calculate cofactor of 3x3 matrix"
+  (testing "should be able to calculate cofactor of 3x3 matrix"
     (let [matrix (matrix [[3 5 0]
                           [2 -1 -7]
                           [6 -1 5]])]
@@ -140,8 +126,7 @@
       (is (roughly 25 (minor matrix 1 0)))
       (is (roughly -25 (cofactor matrix 1 0)))))
 
-  (testing
-    "should be able to calculate determinant of 3x3 matrix"
+  (testing "should be able to calculate determinant of 3x3 matrix"
     (let [matrix (matrix [[1 2 6]
                           [-5 8 -4]
                           [2 6 4]])]
@@ -150,8 +135,7 @@
       (is (roughly -46 (cofactor matrix 0 2)))
       (is (roughly -196 (determinant matrix)))))
 
-  (testing
-    "should be able to calculate determinant of 4x4 matrix"
+  (testing "should be able to calculate determinant of 4x4 matrix"
     (let [matrix (matrix [[-2 -8 3 5]
                           [-3 1 7 3]
                           [1 2 -9 6]
@@ -162,8 +146,7 @@
       (is (roughly 51 (cofactor matrix 0 3)))
       (is (roughly -4071 (determinant matrix)))))
 
-  (testing
-    "should be able to test invertible matrix for invertibility"
+  (testing "should be able to test invertible matrix for invertibility"
     (let [matrix (matrix [[6 4 4 4]
                           [5 5 7 6]
                           [4 -9 3 -7]
@@ -171,8 +154,7 @@
       (is (roughly -2120 (determinant matrix)))
       (is (invertible? matrix))))
 
-  (testing
-    "should be able to test non-invertible matrix for invertibility"
+  (testing "should be able to test non-invertible matrix for invertibility"
     (let [matrix (matrix [[-4 2 -2 -3]
                           [9 6 2 6]
                           [0 -5 1 -5]
@@ -180,8 +162,7 @@
       (is (= 0 (determinant matrix)))
       (is (not (invertible? matrix)))))
 
-  (testing
-    "should be able to calculate inverse of matrix"
+  (testing "should be able to calculate inverse of matrix"
     (let [matrix-a (matrix [[-5 2 6 -8]
                             [1 -5 1 8]
                             [7 7 -6 -7]
