@@ -75,4 +75,8 @@
     (let [a (vektor 1 2 3)
           b (vektor 2 3 4)]
       (is (roughly (vektor -1 2 -1) (cross-product-vektors a b)))
-      (is (roughly (vektor 1 -2 1) (cross-product-vektors b a))))))
+      (is (roughly (vektor 1 -2 1) (cross-product-vektors b a)))))
+
+  (testing "should be able to reflect a vektor"
+    (is (roughly (vektor 1 1 0) (reflect (vektor 1 -1 0) (vektor 0 1 0))))
+    (is (roughly (vektor 1 0 0) (reflect (vektor 0 -1 0) (vektor (/ (sqrt 2) 2) (/ (sqrt 2) 2) 0))))))

@@ -19,3 +19,4 @@
   (vektor (- (* y1 z2) (* z1 y2))
           (- (* z1 x2) (* x1 z2))
           (- (* x1 y2) (* y1 x2))))
+(defn reflect [in normal] (subtract-tuples in (reduce multiply-tuple [normal 2 (dot-product-tuples in normal)])))
