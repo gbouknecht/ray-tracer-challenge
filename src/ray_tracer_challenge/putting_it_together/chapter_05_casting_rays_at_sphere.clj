@@ -2,9 +2,10 @@
   (:require [ray-tracer-challenge.canvas.canvas :refer :all]
             [ray-tracer-challenge.logic.colors :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
+            [ray-tracer-challenge.logic.rays :refer :all]
+            [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
-            [ray-tracer-challenge.logic.tuples :refer :all]
-            [ray-tracer-challenge.logic.rays :refer :all]))
+            [ray-tracer-challenge.logic.tuples :refer :all]))
 
 (defn -main []
   (let [ray-origin (point 0 0 -5)
@@ -13,8 +14,8 @@
         canvas-pixels 100
         pixel-size (/ wall-size canvas-pixels)
         half-wall-size (/ wall-size 2)
-        black [0 0 0]
-        red [1 0 0]
+        black (color 0 0 0)
+        red (color 1 0 0)
         shape (set-transform (sphere) (multiply-matrices (shearing 1 0 0 0 0 0) (scaling 0.5 1 1)))
         coords (for [x (range 0 canvas-pixels) y (range 0 canvas-pixels)] [x y])
         hit? (fn [x y]

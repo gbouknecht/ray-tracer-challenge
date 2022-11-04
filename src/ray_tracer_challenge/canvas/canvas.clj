@@ -1,8 +1,9 @@
 (ns ray-tracer-challenge.canvas.canvas
   (:require [clojure.math.numeric-tower :refer [round]]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [ray-tracer-challenge.logic.colors :refer :all]))
 
-(defn canvas [width height] {:width width :height height :pixels (vec (repeat (* width height) [0 0 0]))})
+(defn canvas [width height] {:width width :height height :pixels (vec (repeat (* width height) (color 0 0 0)))})
 (defn- index-of-pixel-at [canvas x y] (+ x (* y (:width canvas))))
 (defn pixel-at [canvas x y] ((:pixels canvas) (index-of-pixel-at canvas x y)))
 (defn write-pixel [canvas x y color]
