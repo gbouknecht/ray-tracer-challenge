@@ -16,7 +16,7 @@
         half-wall-size (/ wall-size 2)
         black (color 0 0 0)
         red (color 1 0 0)
-        shape (set-transform (sphere) (multiply-matrices (shearing 1 0 0 0 0 0) (scaling 0.5 1 1)))
+        shape (sphere :transform (multiply-matrices (shearing 1 0 0 0 0 0) (scaling 0.5 1 1)))
         coords (for [x (range 0 canvas-pixels) y (range 0 canvas-pixels)] [x y])
         hit? (fn [x y]
                (let [wall-x (+ (- half-wall-size) (* pixel-size x))

@@ -83,12 +83,12 @@
 
   (testing "should be able to intersect a scaled sphere"
     (let [ray (ray (point 0 0 -5) (vektor 0 0 1))
-          sphere (set-transform (sphere) (scaling 2 2 2))
+          sphere (sphere :transform (scaling 2 2 2))
           xs (intersect sphere ray)]
       (is (roughly [3 7] (mapv :t xs)))))
 
   (testing "should be able to intersect translated sphere"
     (let [ray (ray (point 0 0 -5) (vektor 0 0 1))
-          sphere (set-transform (sphere) (translation 5 0 0))
+          sphere (sphere :transform (translation 5 0 0))
           xs (intersect sphere ray)]
       (is (roughly [] (mapv :t xs))))))
