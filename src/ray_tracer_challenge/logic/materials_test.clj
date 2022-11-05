@@ -8,14 +8,14 @@
 
   (testing "should have reasonable defaults"
     (let [material (material)]
-      (is (= (color 1 1 1) (:color material)))
+      (is (= white (:color material)))
       (is (= 0.1 (:ambient material)))
       (is (= 0.9 (:diffuse material)))
       (is (= 0.9 (:specular material)))
       (is (= 200.0 (:shininess material)))))
 
   (testing "should be able to set individual components"
-    (let [color (color 1 0 0)
+    (let [color red
           ambient 0.2
           diffuse 0.8
           specular 0.7

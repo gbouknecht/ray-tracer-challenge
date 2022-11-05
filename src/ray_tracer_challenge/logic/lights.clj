@@ -10,14 +10,14 @@
         ambient-color (multiply-color effective-color (:ambient material))
         light-dot-normal (dot-product-tuples light-vektor normal-vektor)
         diffuse-color (if (< light-dot-normal 0)
-                        (color 0 0 0)
+                        black
                         (reduce multiply-color [effective-color (:diffuse material) light-dot-normal]))
         specular-color (if (< light-dot-normal 0)
-                         (color 0 0 0)
+                         black
                          (let [reflect-vektor (reflect (negate-tuple light-vektor) normal-vektor)
                                reflect-dot-eye (dot-product-tuples reflect-vektor eye-vektor)]
                            (if (<= reflect-dot-eye 0)
-                             (color 0 0 0)
+                             black
                              (let [factor (expt reflect-dot-eye (:shininess material))]
                                (reduce multiply-color [(:intensity light) (:specular material) factor])))))]
     (reduce add-colors [ambient-color diffuse-color specular-color])))

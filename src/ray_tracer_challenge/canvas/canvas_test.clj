@@ -5,7 +5,7 @@
             [ray-tracer-challenge.logic.colors :refer :all]))
 
 (defn- all-coords [canvas] (for [x (range (:width canvas)) y (range (:height canvas))] [x y]))
-(defn- black-pixel-at? [canvas [x y]] (is (= (color 0 0 0) (pixel-at canvas x y))))
+(defn- black-pixel-at? [canvas [x y]] (is (= black (pixel-at canvas x y))))
 (defn- black-canvas? [canvas] (every? (partial black-pixel-at? canvas) (all-coords canvas)))
 
 (deftest about-canvas
@@ -17,10 +17,7 @@
       (black-canvas? canvas)))
 
   (testing "should be able to write pixels"
-    (let [red (color 1 0 0)
-          green (color 0 1 0)
-          blue (color 0 0 1)
-          canvas (-> (canvas 10 20)
+    (let [canvas (-> (canvas 10 20)
                      (write-pixel 0 0 red)
                      (write-pixel 2 3 green)
                      (write-pixel 9 19 blue))]
@@ -30,7 +27,7 @@
 
   (testing "should ignore writing pixels outside bound"
     (let [canvas (canvas 10 20)
-          test-pixel-at (fn [x y] (black-canvas? (write-pixel canvas x y (color 1 1 1))))]
+          test-pixel-at (fn [x y] (black-canvas? (write-pixel canvas x y white)))]
       (test-pixel-at -1 0)
       (test-pixel-at 0 -1)
       (test-pixel-at (:width canvas) 0)
