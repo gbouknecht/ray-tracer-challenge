@@ -92,3 +92,33 @@
       (is (roughly (point 5 -5 0) p3))
       (is (roughly (point 15 0 7) p4))
       (is (roughly p4 (multiply-matrix-by-tuple matrix-t p1))))))
+
+(deftest about-view-transformations
+
+  (testing "should be identity matrix for default orientation"
+    (let [from (point 0 0 0)
+          to (point 0 0 -1)
+          up (vektor 0 1 0)]
+      (is (roughly identity-matrix (view-transform from to up)))))
+
+  (testing "should reflect across x and z axes when looking in positive z direction"
+    (let [from (point 0 0 0)
+          to (point 0 0 1)
+          up (vektor 0 1 0)]
+      (is (roughly (scaling -1 1 -1) (view-transform from to up)))))
+
+  (testing "should move the world"
+    (let [from (point 0 0 8)
+          to (point 0 0 0)
+          up (vektor 0 1 0)]
+      (is (roughly (translation 0 0 -8) (view-transform from to up)))))
+
+  (testing "should be able to look in some arbitrary direction"
+    (let [from (point 1 3 2)
+          to (point 4 -2 8)
+          up (vektor 1 1 0)]
+      (is (roughly (matrix [[-0.50709 0.50709 0.67612 -2.36643]
+                            [0.76772 0.60609 0.12122 -2.82843]
+                            [-0.35857 0.59761 -0.71714 0.00000]
+                            [0.00000 0.00000 0.00000 1.00000]])
+                   (view-transform from to up))))))
