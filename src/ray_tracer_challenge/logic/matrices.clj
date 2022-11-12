@@ -13,7 +13,7 @@
   (let [index-start (index-of-value-at matrix row 0)
         index-end (+ index-start (:col-count matrix))]
     (subvec (:values matrix) index-start index-end)))
-(defn- col-at [matrix col] (mapv #(value-at matrix % col) (range 0 (:row-count matrix))))
+(defn- col-at [matrix col] (mapv #(value-at matrix % col) (range (:row-count matrix))))
 (defn multiply-matrices [matrix1 matrix2]
   (let [row-count (:row-count matrix1)
         col-count (:col-count matrix2)]
@@ -21,19 +21,19 @@
             (format "col count matrix1 (%d) should equal row count matrix2 (%d)", (:col-count matrix1) (:row-count matrix2)))
     {:row-count row-count
      :col-count col-count
-     :values    (vec (for [row (range 0 row-count) col (range 0 col-count)]
+     :values    (vec (for [row (range row-count) col (range col-count)]
                        (dot-product-tuples (row-at matrix1 row) (col-at matrix2 col))))}))
 (defn multiply-matrix-by-tuple [matrix tuple]
   (assert (= (:col-count matrix) (count tuple))
           (format "col count matrix (%d) should equal tuple length (%d)" (:col-count matrix) (count tuple)))
-  (mapv #(dot-product-tuples (row-at matrix %) tuple) (range 0 (:row-count matrix))))
+  (mapv #(dot-product-tuples (row-at matrix %) tuple) (range (:row-count matrix))))
 (defn transpose [matrix]
   (let [row-count (:row-count matrix)
         col-count (:col-count matrix)]
     (assert (= row-count col-count) (format "row count (%d) should equal col count (%d)" row-count col-count))
     {:row-count row-count
      :col-count col-count
-     :values    (vec (flatten (for [row (range 0 row-count)] (col-at matrix row))))}))
+     :values    (vec (flatten (for [row (range row-count)] (col-at matrix row))))}))
 (declare cofactor)
 (defn determinant [matrix]
   (assert (= (:row-count matrix) (:col-count matrix)) "should be nxn matrix")
@@ -45,7 +45,7 @@
         col-count (:col-count matrix)]
     {:row-count (dec row-count)
      :col-count (dec col-count)
-     :values    (vec (flatten (for [row (range 0 row-count) col (range 0 col-count)
+     :values    (vec (flatten (for [row (range row-count) col (range col-count)
                                     :when (and (not= row row-to-remove) (not= col col-to-remove))]
                                 (value-at matrix row col))))}))
 (defn minor [matrix row col] (determinant (submatrix matrix row col)))
@@ -57,20 +57,20 @@
         determinant (determinant matrix)]
     {:row-count row-count
      :col-count col-count
-     :values    (vec (flatten (for [col (range 0 col-count) row (range 0 row-count)]
+     :values    (vec (flatten (for [col (range col-count) row (range row-count)]
                                 (/ (cofactor matrix row col) determinant))))}))
 
 (defn str-matrix [matrix]
   (let [col-count (:col-count matrix)
-        formatted-cols (for [col (range 0 col-count)]
+        formatted-cols (for [col (range col-count)]
                          (let [formatted (map #(format "%.5f" (double %)) (col-at matrix col))
                                max-width (apply max (map count formatted))]
                            (map #(format (str "%" max-width "s") %) formatted)))]
     (str/join
       "\n"
-      (for [row (range 0 (:row-count matrix))]
+      (for [row (range (:row-count matrix))]
         (let [row-prefix (if (zero? row) "[[" " [")
               row-suffix (if (= row (dec (:row-count matrix))) "]]" "]")
-              formatted-row (map #(-> formatted-cols (nth %) (nth row)) (range 0 col-count))]
+              formatted-row (map #(-> formatted-cols (nth %) (nth row)) (range col-count))]
           (str row-prefix (str/join " " formatted-row) row-suffix))))))
 (defn println-matrix [matrix] (println (str-matrix matrix)))

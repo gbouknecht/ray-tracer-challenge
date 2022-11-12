@@ -18,7 +18,7 @@
         half-wall-size (/ wall-size 2)
         shape (sphere :material (material :color (color 1 0.2 1)))
         light (point-light (point -10 10 -10) (color 1 1 1))
-        coords (for [x (range 0 canvas-pixels) y (range 0 canvas-pixels)] [x y])
+        coords (for [x (range canvas-pixels) y (range canvas-pixels)] [x y])
         hit-color (fn [x y]
                     (let [wall-x (+ (- half-wall-size) (* pixel-size x))
                           wall-y (- half-wall-size (* pixel-size y))

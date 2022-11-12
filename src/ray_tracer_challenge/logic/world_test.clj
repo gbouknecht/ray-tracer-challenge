@@ -11,7 +11,7 @@
             [ray-tracer-challenge.logic.world :refer :all]
             [ray-tracer-challenge.test.test-utils :refer :all]))
 
-(defn- default-world [& {:keys [light] :or {light (point-light (point -10 10 -10) (color 1 1 1))}}]
+(defn default-world [& {:keys [light] :or {light (point-light (point -10 10 -10) (color 1 1 1))}}]
   (let [s1 (sphere :material (material :color (color 0.8 1.0 0.6) :diffuse 0.7 :specular 0.2))
         s2 (sphere :transform (scaling 0.5 0.5 0.5))]
     (world :light light :objects [s1 s2])))

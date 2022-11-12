@@ -15,7 +15,7 @@
         pixel-size (/ wall-size canvas-pixels)
         half-wall-size (/ wall-size 2)
         shape (sphere :transform (multiply-matrices (shearing 1 0 0 0 0 0) (scaling 0.5 1 1)))
-        coords (for [x (range 0 canvas-pixels) y (range 0 canvas-pixels)] [x y])
+        coords (for [x (range canvas-pixels) y (range canvas-pixels)] [x y])
         hit? (fn [x y]
                (let [wall-x (+ (- half-wall-size) (* pixel-size x))
                      wall-y (- half-wall-size (* pixel-size y))
