@@ -4,15 +4,15 @@
             [ray-tracer-challenge.logic.tuples :refer :all]))
 
 (defn point-light [position intensity] {:position position :intensity intensity})
-(defn lighting [material light point eye-vektor normal-vektor]
+(defn lighting [material light point eye-vektor normal-vektor in-shadow]
   (let [effective-color (multiply-colors (:color material) (:intensity light))
         light-vektor (normalize-vektor (subtract-tuples (:position light) point))
         ambient-color (multiply-color effective-color (:ambient material))
         light-dot-normal (dot-product-tuples light-vektor normal-vektor)
-        diffuse-color (if (< light-dot-normal 0)
+        diffuse-color (if (or (< light-dot-normal 0) in-shadow)
                         black
                         (reduce multiply-color [effective-color (:diffuse material) light-dot-normal]))
-        specular-color (if (< light-dot-normal 0)
+        specular-color (if (or (< light-dot-normal 0) in-shadow)
                          black
                          (let [reflect-vektor (reflect (negate-tuple light-vektor) normal-vektor)
                                reflect-dot-eye (dot-product-tuples reflect-vektor eye-vektor)]

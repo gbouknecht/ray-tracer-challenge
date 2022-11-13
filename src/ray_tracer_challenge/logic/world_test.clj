@@ -70,4 +70,26 @@
                     (assoc-in [:objects 1 :material :ambient] 1))
           inner (second (:objects world))
           ray (ray (point 0 0 0.75) (vektor 0 0 -1))]
-      (is (roughly (get-in inner [:material :color]) (color-at world ray))))))
+      (is (roughly (get-in inner [:material :color]) (color-at world ray)))))
+
+  (testing "should not be shadowed when nothing is collinear with point and light"
+    (is (not (shadowed? (default-world) (point 0 10 0)))))
+
+  (testing "should be shadowed when an object is between point and light"
+    (is (shadowed? (default-world) (point 10 -10 10))))
+
+  (testing "should not be shadowed when an object is behind light"
+    (is (not (shadowed? (default-world) (point -20 20 -20)))))
+
+  (testing "should not be shadowed when an object is behind point"
+    (is (not (shadowed? (default-world) (point -2 2 -2)))))
+
+  (testing "should be able to shade an intersection in shadow"
+    (let [s1 (sphere)
+          s2 (sphere :transform (translation 0 0 10))
+          world (world :light (point-light (point 0 0 -10) (color 1 1 1))
+                       :objects [s1 s2])
+          ray (ray (point 0 0 5) (vektor 0 0 1))
+          intersection (intersection 4 s2)
+          comps (prepare-computation intersection ray)]
+      (is (roughly (color 0.1 0.1 0.1) (shade-hit world comps))))))

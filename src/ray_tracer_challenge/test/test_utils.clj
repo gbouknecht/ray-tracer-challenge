@@ -1,11 +1,10 @@
 (ns ray-tracer-challenge.test.test-utils
   (:require [clojure.test :refer :all]
+            [ray-tracer-challenge.logic.constants :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]))
 
 (declare roughly not-roughly)
-
-(def epsilon 0.00001)
 
 (defn diff-smaller-than-epsilon? [x y]
   (cond (and (matrix? x) (matrix? y)) (diff-smaller-than-epsilon? (:values x) (:values y))

@@ -1,8 +1,10 @@
 (ns ray-tracer-challenge.logic.intersections-test
   (:require [clojure.test :refer :all]
+            [ray-tracer-challenge.logic.constants :refer :all]
             [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.spheres :refer :all]
+            [ray-tracer-challenge.logic.transformations :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
             [ray-tracer-challenge.test.test-utils :refer :all]))
 
@@ -34,4 +36,14 @@
       (is (roughly (point 0 0 1) (:point comps)))
       (is (roughly (vektor 0 0 -1) (:eye-vektor comps)))
       (is (true? (:inside comps)))
-      (is (roughly (vektor 0 0 -1) (:normal-vektor comps))))))
+      (is (roughly (vektor 0 0 -1) (:normal-vektor comps)))))
+
+  (testing "should offset the point to take imprecise representation of floating point numbers into account"
+    (let [ray (ray (point 0 0 -5) (vektor 0 0 1))
+          shape (sphere :transform (translation 0 0 1))
+          intersection (intersection 5 shape)
+          comps (prepare-computation intersection ray)
+          [_ _ point-z] (:point comps)
+          [_ _ over-point-z] (:over-point comps)]
+      (is (< over-point-z (- (/ epsilon 2))))
+      (is (> point-z over-point-z)))))
