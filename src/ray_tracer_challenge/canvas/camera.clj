@@ -1,4 +1,4 @@
-(ns ray-tracer-challenge.logic.camera
+(ns ray-tracer-challenge.canvas.camera
   (:require [ray-tracer-challenge.canvas.canvas :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]

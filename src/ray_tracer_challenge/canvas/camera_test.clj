@@ -1,8 +1,8 @@
-(ns ray-tracer-challenge.logic.camera-test
+(ns ray-tracer-challenge.canvas.camera-test
   (:require [clojure.math.numeric-tower :refer [sqrt]]
             [clojure.test :refer :all]
+            [ray-tracer-challenge.canvas.camera :refer :all]
             [ray-tracer-challenge.canvas.canvas :refer :all]
-            [ray-tracer-challenge.logic.camera :refer :all]
             [ray-tracer-challenge.logic.colors :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
