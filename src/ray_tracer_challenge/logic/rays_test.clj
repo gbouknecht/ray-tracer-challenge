@@ -23,15 +23,6 @@
       (is (roughly (point 1 3 4) (position ray -1)))
       (is (roughly (point 4.5 3 4) (position ray 2.5)))))
 
-  (testing "should be able to calculate intersection with a sphere"
-    (let [sphere (sphere)]
-      (are [xs origin] (roughly (mapv #(intersection % sphere) xs) (intersect sphere (ray origin (vektor 0 0 1))))
-                       [4.0 6.0] (point 0 0 -5)
-                       [5.0 5.0] (point 0 1 -5)
-                       [] (point 0 2 -5)
-                       [-1.0 1.0] (point 0 0 0)
-                       [-6.0 -4.0] (point 0 0 5))))
-
   (testing "should be able to encapsulate t and object as an intersection"
     (let [sphere (sphere)
           intersection (intersection 3.5 sphere)]
@@ -79,16 +70,4 @@
           matrix (scaling 2 3 4)
           ray2 (transform ray1 matrix)]
       (is (roughly (point 2 6 12) (:origin ray2)))
-      (is (roughly (vektor 0 3 0) (:direction ray2)))))
-
-  (testing "should be able to intersect a scaled sphere"
-    (let [ray (ray (point 0 0 -5) (vektor 0 0 1))
-          sphere (sphere :transform (scaling 2 2 2))
-          xs (intersect sphere ray)]
-      (is (roughly [3 7] (mapv :t xs)))))
-
-  (testing "should be able to intersect translated sphere"
-    (let [ray (ray (point 0 0 -5) (vektor 0 0 1))
-          sphere (sphere :transform (translation 5 0 0))
-          xs (intersect sphere ray)]
-      (is (roughly [] (mapv :t xs))))))
+      (is (roughly (vektor 0 3 0) (:direction ray2))))))

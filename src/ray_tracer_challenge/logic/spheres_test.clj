@@ -3,6 +3,7 @@
             [clojure.test :refer :all]
             [ray-tracer-challenge.logic.materials :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
+            [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
@@ -37,4 +38,25 @@
     (let [sphere (sphere :transform (translation 0 1 0))]
       (is (roughly (vektor 0 0.70711 -0.70711) (normal-at sphere (point 0 1.70711 -0.70711)))))
     (let [sphere (sphere :transform (multiply-matrices (scaling 1 0.5 1) (rotation-z (/ Math/PI 5))))]
-      (is (roughly (vektor 0 0.97014 -0.24254) (normal-at sphere (point 0 (/ (sqrt 2) 2) (- (/ (sqrt 2) 2)))))))))
+      (is (roughly (vektor 0 0.97014 -0.24254) (normal-at sphere (point 0 (/ (sqrt 2) 2) (- (/ (sqrt 2) 2))))))))
+
+  (testing "should be able to calculate intersection"
+    (let [sphere (sphere)]
+      (are [xs origin] (roughly (mapv #(intersection % sphere) xs) (intersect sphere (ray origin (vektor 0 0 1))))
+                       [4.0 6.0] (point 0 0 -5)
+                       [5.0 5.0] (point 0 1 -5)
+                       [] (point 0 2 -5)
+                       [-1.0 1.0] (point 0 0 0)
+                       [-6.0 -4.0] (point 0 0 5))))
+
+  (testing "should be able to calculate intersection on a scaled sphere"
+    (let [ray (ray (point 0 0 -5) (vektor 0 0 1))
+          sphere (sphere :transform (scaling 2 2 2))
+          xs (intersect sphere ray)]
+      (is (roughly [3 7] (mapv :t xs)))))
+
+  (testing "should be able to calculate intersection on a translated sphere"
+    (let [ray (ray (point 0 0 -5) (vektor 0 0 1))
+          sphere (sphere :transform (translation 5 0 0))
+          xs (intersect sphere ray)]
+      (is (roughly [] (mapv :t xs))))))
