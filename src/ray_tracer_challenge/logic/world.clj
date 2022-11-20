@@ -3,6 +3,7 @@
             [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.lights :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
+            [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 

@@ -1,6 +1,7 @@
 (ns ray-tracer-challenge.logic.intersections
   (:require [ray-tracer-challenge.logic.constants :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
+            [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 

@@ -5,6 +5,7 @@
             [ray-tracer-challenge.logic.materials :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
+            [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
