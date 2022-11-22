@@ -13,4 +13,4 @@
                 (let [t (/ (- origin-y) direction-y)]
                   [(intersection t plane)]))))
           (local-normal-at [_ _] (vektor 0 1 0))]
-    (shape local-intersect local-normal-at transform material)))
+    (shape transform material local-intersect local-normal-at)))

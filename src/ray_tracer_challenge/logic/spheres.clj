@@ -19,4 +19,4 @@
                       t2 (/ (+ (- b) (sqrt discriminant)) (* 2 a))]
                   [(intersection t1 sphere) (intersection t2 sphere)]))))
           (local-normal-at [_ local-point] (subtract-tuples local-point (point 0 0 0)))]
-    (shape local-intersect local-normal-at transform material)))
+    (shape transform material local-intersect local-normal-at)))
