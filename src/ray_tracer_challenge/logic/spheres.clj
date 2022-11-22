@@ -6,16 +6,17 @@
             [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 
-(defn- local-intersect [sphere local-ray]
-  (let [sphere-to-ray (subtract-tuples (:origin local-ray) (point 0 0 0))
-        a (dot-product-tuples (:direction local-ray) (:direction local-ray))
-        b (* (dot-product-tuples (:direction local-ray) sphere-to-ray) 2)
-        c (dec (dot-product-tuples sphere-to-ray sphere-to-ray))
-        discriminant (- (* b b) (* 4 a c))]
-    (if (< discriminant 0)
-      []
-      (let [t1 (/ (- (- b) (sqrt discriminant)) (* 2 a))
-            t2 (/ (+ (- b) (sqrt discriminant)) (* 2 a))]
-        [(intersection t1 sphere) (intersection t2 sphere)]))))
-(defn- local-normal-at [_ local-point] (subtract-tuples local-point (point 0 0 0)))
-(defn sphere [& {:keys [transform material]}] (shape local-intersect local-normal-at transform material))
+(defn sphere [& {:keys [transform material]}]
+  (letfn [(local-intersect [sphere local-ray]
+            (let [sphere-to-ray (subtract-tuples (:origin local-ray) (point 0 0 0))
+                  a (dot-product-tuples (:direction local-ray) (:direction local-ray))
+                  b (* (dot-product-tuples (:direction local-ray) sphere-to-ray) 2)
+                  c (dec (dot-product-tuples sphere-to-ray sphere-to-ray))
+                  discriminant (- (* b b) (* 4 a c))]
+              (if (< discriminant 0)
+                []
+                (let [t1 (/ (- (- b) (sqrt discriminant)) (* 2 a))
+                      t2 (/ (+ (- b) (sqrt discriminant)) (* 2 a))]
+                  [(intersection t1 sphere) (intersection t2 sphere)]))))
+          (local-normal-at [_ local-point] (subtract-tuples local-point (point 0 0 0)))]
+    (shape local-intersect local-normal-at transform material)))

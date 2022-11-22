@@ -11,14 +11,15 @@
 
 (def ^:private saved-args (atom nil))
 (def ^:private saved-result (atom nil))
-(defn- local-intersect [shape local-ray]
-  (reset! saved-args [shape local-ray])
-  (reset! saved-result [(intersection 1 shape) (intersection 2 shape)]))
-(defn- local-normal-at [shape local-point]
-  (reset! saved-args [shape local-point])
-  (let [[x y z] local-point] (vektor x y z)))
 
-(defn test-shape [& {:keys [transform material]}] (shape local-intersect local-normal-at transform material))
+(defn test-shape [& {:keys [transform material]}]
+  (letfn [(local-intersect [shape local-ray]
+            (reset! saved-args [shape local-ray])
+            (reset! saved-result [(intersection 1 shape) (intersection 2 shape)]))
+          (local-normal-at [shape local-point]
+            (reset! saved-args [shape local-point])
+            (let [[x y z] local-point] (vektor x y z)))]
+    (shape local-intersect local-normal-at transform material)))
 
 (deftest about-shapes
 
