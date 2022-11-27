@@ -14,15 +14,18 @@
         index-end (+ index-start (:col-count matrix))]
     (subvec (:values matrix) index-start index-end)))
 (defn- col-at [matrix col] (mapv #(value-at matrix % col) (range (:row-count matrix))))
-(defn multiply-matrices [matrix1 matrix2]
-  (let [row-count (:row-count matrix1)
-        col-count (:col-count matrix2)]
-    (assert (= (:col-count matrix1) (:row-count matrix2))
-            (format "col count matrix1 (%d) should equal row count matrix2 (%d)", (:col-count matrix1) (:row-count matrix2)))
-    {:row-count row-count
-     :col-count col-count
-     :values    (vec (for [row (range row-count) col (range col-count)]
-                       (dot-product-tuples (row-at matrix1 row) (col-at matrix2 col))))}))
+(defn multiply-matrices [& matrices]
+  (letfn [(multiply [matrix1 matrix2]
+            (let [row-count (:row-count matrix1)
+                  col-count (:col-count matrix2)]
+              (assert (= (:col-count matrix1) (:row-count matrix2))
+                      (format "col count matrix1 (%d) should equal row count matrix2 (%d)",
+                              (:col-count matrix1) (:row-count matrix2)))
+              {:row-count row-count
+               :col-count col-count
+               :values    (vec (for [row (range row-count) col (range col-count)]
+                                 (dot-product-tuples (row-at matrix1 row) (col-at matrix2 col))))}))]
+    (reduce multiply matrices)))
 (defn multiply-matrix-by-tuple [matrix tuple]
   (assert (= (:col-count matrix) (count tuple))
           (format "col count matrix (%d) should equal tuple length (%d)" (:col-count matrix) (count tuple)))

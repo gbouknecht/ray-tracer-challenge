@@ -13,9 +13,9 @@
 
 (defn -main []
   (let [wall (fn [factor]
-               (plane :transform (reduce multiply-matrices [(rotation-y (* factor (/ Math/PI (/ 2 3))))
-                                                            (translation 0 0 8)
-                                                            (rotation-x (/ Math/PI 2))])
+               (plane :transform (multiply-matrices (rotation-y (* factor (/ Math/PI (/ 2 3))))
+                                                    (translation 0 0 8)
+                                                    (rotation-x (/ Math/PI 2)))
                       :material (material :color white :specular 0)))
         world (world :light (point-light (point -2 4 -4) (color 1 1 1))
                      :objects [(plane :material (material :color (color 0.85 0.72 0.53) :specular 0))

@@ -84,7 +84,7 @@
           matrix-a (rotation-x (/ Math/PI 2))
           matrix-b (scaling 5 5 5)
           matrix-c (translation 10 5 7)
-          matrix-t (reduce multiply-matrices [matrix-c matrix-b matrix-a])
+          matrix-t (multiply-matrices matrix-c matrix-b matrix-a)
           p2 (multiply-matrix-by-tuple matrix-a p1)
           p3 (multiply-matrix-by-tuple matrix-b p2)
           p4 (multiply-matrix-by-tuple matrix-c p3)]

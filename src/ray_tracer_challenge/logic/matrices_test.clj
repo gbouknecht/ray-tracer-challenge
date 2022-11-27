@@ -60,6 +60,24 @@
                                              [4 3 6 5]
                                              [1 2 7 8]])))))
 
+  (testing "should be able to multiply more than two matrices"
+    (is (roughly (matrix [[274 310 698 672]
+                          [638 710 1582 1512]
+                          [636 690 1512 1428]
+                          [272 290 628 588]])
+                 (multiply-matrices (matrix [[1 2 3 4]
+                                             [5 6 7 8]
+                                             [9 8 7 6]
+                                             [5 4 3 2]])
+                                    (matrix [[-2 1 2 3]
+                                             [3 2 1 -1]
+                                             [4 3 6 5]
+                                             [1 2 7 8]])
+                                    (matrix [[-2 1 2 3]
+                                             [3 2 1 -1]
+                                             [4 3 6 5]
+                                             [1 2 7 8]])))))
+
   (testing "should be able to multiply matrix by a tuple"
     (is (roughly [18 24 33 1]
                  (multiply-matrix-by-tuple (matrix [[1 2 3 4]
