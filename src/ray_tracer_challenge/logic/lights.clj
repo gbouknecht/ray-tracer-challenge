@@ -1,11 +1,13 @@
 (ns ray-tracer-challenge.logic.lights
   (:require [clojure.math.numeric-tower :refer [expt]]
             [ray-tracer-challenge.logic.colors :refer :all]
+            [ray-tracer-challenge.logic.patterns :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 
 (defn point-light [position intensity] {:position position :intensity intensity})
-(defn lighting [material light point eye-vektor normal-vektor in-shadow]
-  (let [effective-color (multiply-colors (:color material) (:intensity light))
+(defn lighting [material object light point eye-vektor normal-vektor in-shadow]
+  (let [color (if-let [pattern (:pattern material)] (pattern-at-shape pattern object point) (:color material))
+        effective-color (multiply-colors color (:intensity light))
         light-vektor (normalize-vektor (subtract-tuples (:position light) point))
         ambient-color (multiply-color effective-color (:ambient material))
         light-dot-normal (dot-product-tuples light-vektor normal-vektor)

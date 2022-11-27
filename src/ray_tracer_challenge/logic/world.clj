@@ -20,6 +20,7 @@
     (and hit (< (:t hit) distance))))
 (defn shade-hit [world comps]
   (lighting (get-in comps [:object :material])
+            (:object comps)
             (:light world)
             (:over-point comps)
             (:eye-vektor comps)

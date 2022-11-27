@@ -4,6 +4,7 @@
             [ray-tracer-challenge.logic.colors :refer :all]
             [ray-tracer-challenge.logic.lights :refer :all]
             [ray-tracer-challenge.logic.materials :refer :all]
+            [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
             [ray-tracer-challenge.test.test-utils :refer :all]))
 
@@ -25,35 +26,35 @@
       (let [eye-vektor (vektor 0 0 -1)
             normal-vektor (vektor 0 0 -1)
             light (point-light (point 0 0 -10) white)
-            result (lighting material light position eye-vektor normal-vektor false)]
+            result (lighting material (sphere) light position eye-vektor normal-vektor false)]
         (is (roughly (color 1.9 1.9 1.9) result))))
 
     (testing "should be able to handle eye between light and surface, eye offset 45°"
       (let [eye-vektor (vektor 0 (/ (sqrt 2) 2) (- (/ (sqrt 2) 2)))
             normal-vektor (vektor 0 0 -1)
             light (point-light (point 0 0 -10) white)
-            result (lighting material light position eye-vektor normal-vektor false)]
+            result (lighting material (sphere) light position eye-vektor normal-vektor false)]
         (is (roughly white result))))
 
     (testing "should be able to handle eye opposite surface, light offset 45°"
       (let [eye-vektor (vektor 0 0 -1)
             normal-vektor (vektor 0 0 -1)
             light (point-light (point 0 10 -10) white)
-            result (lighting material light position eye-vektor normal-vektor false)]
+            result (lighting material (sphere) light position eye-vektor normal-vektor false)]
         (is (roughly (color 0.7364 0.7364 0.7364) result))))
 
     (testing "should be able to handle eye in path of reflection vector"
       (let [eye-vektor (vektor 0 (- (/ (sqrt 2) 2)) (- (/ (sqrt 2) 2)))
             normal-vektor (vektor 0 0 -1)
             light (point-light (point 0 10 -10) white)
-            result (lighting material light position eye-vektor normal-vektor false)]
+            result (lighting material (sphere) light position eye-vektor normal-vektor false)]
         (is (roughly (color 1.6364 1.6364 1.6364) result))))
 
     (testing "should be able to handle light behind surface"
       (let [eye-vektor (vektor 0 0 -1)
             normal-vektor (vektor 0 0 -1)
             light (point-light (point 0 0 10) white)
-            result (lighting material light position eye-vektor normal-vektor false)]
+            result (lighting material (sphere) light position eye-vektor normal-vektor false)]
         (is (roughly (color 0.1 0.1 0.1) result))))
 
     (testing "should be able to handle surface in shadow"
@@ -61,5 +62,5 @@
             normal-vektor (vektor 0 0 -1)
             light (point-light (point 0 0 -10) (color 1 1 1))
             in-shadow true
-            result (lighting material light position eye-vektor normal-vektor in-shadow)]
+            result (lighting material (sphere) light position eye-vektor normal-vektor in-shadow)]
         (is (roughly (color 0.1 0.1 0.1) result))))))
