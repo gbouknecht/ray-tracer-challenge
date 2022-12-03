@@ -13,7 +13,7 @@
 
 (defn -main []
   (let [wall (fn [factor]
-               (plane :transform (multiply-matrices (rotation-y (* factor (/ Math/PI (/ 2 3))))
+               (plane :transform (multiply-matrices (rotation-y (* factor (/ Math/PI 3)))
                                                     (translation 0 0 8)
                                                     (rotation-x (/ Math/PI 2)))
                       :material (material :color white :specular 0)))
@@ -22,6 +22,7 @@
                                (wall 1)
                                (wall 0)
                                (wall -1)
+                               (wall -2)
                                (sphere :transform (multiply-matrices (translation 0 1.5 0) (scaling 1.5 1.5 1.5))
                                        :material (material :color (color 0.3 1 0)))
                                (sphere :transform (multiply-matrices (translation -2 0.5 -2) (scaling 0.5 0.5 0.5))
