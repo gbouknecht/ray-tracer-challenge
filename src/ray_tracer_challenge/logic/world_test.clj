@@ -5,8 +5,9 @@
             [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.lights :refer :all]
             [ray-tracer-challenge.logic.materials :refer :all]
-            [ray-tracer-challenge.logic.rays :refer :all]
+            [ray-tracer-challenge.logic.patterns-test :refer [test-pattern]]
             [ray-tracer-challenge.logic.planes :refer :all]
+            [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
@@ -72,7 +73,7 @@
                     (assoc-in [:objects 1 :material :ambient] 1))
           inner (second (:objects world))
           ray (ray (point 0 0 0.75) (vektor 0 0 -1))]
-      (is (roughly (get-in inner [:material :color]) (color-at world ray)))))
+      (is (roughly (-> inner :material :color) (color-at world ray)))))
 
   (testing "should not be shadowed when nothing is collinear with point and light"
     (is (not (shadowed? (default-world) (point 0 10 0)))))
@@ -123,7 +124,7 @@
   (testing "should be able to handle mutually reflective surfaces"
     (let [world (world :light (point-light (point 0 0 0) white)
                        :objects [(plane :transform (translation 0 -1 0) :material (material :reflective 1))
-                                 (plane :transform (translation 0 1 0) :material (material :reflective 1) )])
+                                 (plane :transform (translation 0 1 0) :material (material :reflective 1))])
           ray (ray (point 0 0 0) (vektor 0 1 0))]
       (is (not-thrown? StackOverflowError (color-at world ray)))))
 
@@ -133,4 +134,63 @@
           ray (ray (point 0 0 -3) (vektor 0 (- (/ (sqrt 2) 2)) (/ (sqrt 2) 2)))
           intersection (intersection (sqrt 2) shape)
           comps (prepare-computation intersection ray)]
-      (is (roughly black (reflected-color world comps 0))))))
+      (is (roughly black (reflected-color world comps 0)))))
+
+  (testing "should be able to refract color for an opaque surface"
+    (let [world (default-world)
+          shape (first (:objects world))
+          ray (ray (point 0 0 -5) (vektor 0 0 1))
+          intersections [(intersection 4 shape) (intersection 6 shape)]
+          comps (prepare-computation (first intersections) ray intersections)]
+      (is (roughly black (refracted-color world comps 5)))))
+
+  (testing "should refracted color at maximum recursive depth"
+    (let [world (default-world)
+          shape (update (first (:objects world)) :material #(assoc % :transparency 1.0 :refractive-index 1.5))
+          ray (ray (point 0 0 -5) (vektor 0 0 1))
+          intersections [(intersection 4 shape) (intersection 6 shape)]
+          comps (prepare-computation (first intersections) ray intersections)]
+      (is (roughly black (refracted-color world comps 0)))))
+
+  (testing "should be able to refract color under total internal reflection"
+    (let [world (default-world)
+          shape (update (first (:objects world)) :material #(assoc % :transparency 1.0 :refractive-index 1.5))
+          ray (ray (point 0 0 (/ (sqrt 2) 2)) (vektor 0 1 0))
+          intersections [(intersection (- (/ (sqrt 2) 2)) shape) (intersection (/ (sqrt 2) 2) shape)]
+          comps (prepare-computation (second intersections) ray intersections)]
+      (is (roughly black (refracted-color world comps 5)))))
+
+  (testing "should be able to refract color with a refracted ray"
+    (let [world (-> (default-world)
+                    (update-in [:objects 0 :material] #(assoc % :ambient 1.0 :pattern (test-pattern)))
+                    (update-in [:objects 1 :material] #(assoc % :transparency 1.0 :refractive-index 1.5)))
+          a (first (:objects world))
+          b (second (:objects world))
+          ray (ray (point 0 0 0.1) (vektor 0 1 0))
+          intersections (mapv (partial apply intersection) [[-0.9899 a] [-0.4899 b] [0.4899 b] [0.9899 a]])
+          comps (prepare-computation (intersections 2) ray intersections)]
+      (is (roughly (color 0 0.99887 0.04722) (refracted-color world comps 5)))))
+
+  (testing "should be able to shade with a transparent material"
+    (let [floor (-> (plane :transform (translation 0 -1 0))
+                    (update :material #(assoc % :transparency 0.5 :refractive-index 1.5)))
+          ball (-> (sphere :transform (translation 0 -3.5 -0.5))
+                   (update :material #(assoc % :color red :ambient 0.5)))
+          world (-> (default-world)
+                    (update :objects concat [floor ball]))
+          ray (ray (point 0 0 -3) (vektor 0 (- (/ (sqrt 2) 2)) (/ (sqrt 2) 2)))
+          intersections [(intersection (sqrt 2) floor)]
+          comps (prepare-computation (intersections 0) ray intersections)]
+      (is (roughly (color 0.93642 0.68642 0.68642) (shade-hit world comps 5)))))
+
+  (testing "should be able to shade with a reflective, transparent material"
+    (let [floor (-> (plane :transform (translation 0 -1 0))
+                    (update :material #(assoc % :reflective 0.5 :transparency 0.5 :refractive-index 1.5)))
+          ball (-> (sphere :transform (translation 0 -3.5 -0.5))
+                   (update :material #(assoc % :color red :ambient 0.5)))
+          world (-> (default-world)
+                    (update :objects concat [floor ball]))
+          ray (ray (point 0 0 -3) (vektor 0 (- (/ (sqrt 2) 2)) (/ (sqrt 2) 2)))
+          intersections [(intersection (sqrt 2) floor)]
+          comps (prepare-computation (intersections 0) ray intersections)]
+      (is (roughly (color 0.93391 0.69643 0.69243) (shade-hit world comps 5))))))

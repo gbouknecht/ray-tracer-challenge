@@ -50,9 +50,58 @@
       (is (< over-point-z (- (/ epsilon 2))))
       (is (> point-z over-point-z))))
 
+  (testing "should precompute under point as offset below surface"
+    (let [ray (ray (point 0 0 -5) (vektor 0 0 1))
+          shape (glass-sphere :transform (translation 0 0 1))
+          intersection (intersection 5 shape)
+          intersections [intersection]
+          comps (prepare-computation intersection ray intersections)
+          [_ _ point-z] (:point comps)
+          [_ _ under-point-z] (:under-point comps)]
+      (is (> under-point-z (/ epsilon 2)))
+      (is (< point-z under-point-z))))
+
   (testing "should be able to precompute reflection vector"
     (let [ray (ray (point 0 1 -1) (vektor 0 (- (/ (sqrt 2) 2)) (/ (sqrt 2) 2)))
           shape (plane)
           intersection (intersection (sqrt 2) shape)
           comps (prepare-computation intersection ray)]
-      (is (roughly (vektor 0 (/ (sqrt 2) 2) (/ (sqrt 2) 2)) (:reflect-vektor comps))))))
+      (is (roughly (vektor 0 (/ (sqrt 2) 2) (/ (sqrt 2) 2)) (:reflect-vektor comps)))))
+
+  (testing "should find n1 and n2 at various intersections"
+    (let [a (assoc-in (glass-sphere :transform (scaling 2 2 2)) [:material :refractive-index] 1.5)
+          b (assoc-in (glass-sphere :transform (translation 0 0 -0.25)) [:material :refractive-index] 2.0)
+          c (assoc-in (glass-sphere :transform (translation 0 0 0.25)) [:material :refractive-index] 2.5)
+          ray (ray (point 0 0 -4) (vektor 0 0 1))
+          intersections (mapv (partial apply intersection) [[2 a] [2.75 b] [3.25 c] [4.75 b] [5.25 c] [6 a]])]
+      (are [index n1 n2] (let [comps (prepare-computation (intersections index) ray intersections)]
+                           (is (roughly [n1 n2] (mapv comps [:n1 :n2]))))
+                         0 1.0 1.5
+                         1 1.5 2.0
+                         2 2.0 2.5
+                         3 2.5 2.5
+                         4 2.5 1.5
+                         5 1.5 1.0))))
+
+(deftest about-schlick-approximation
+
+  (testing "should approximate under total internal reflection"
+    (let [shape (glass-sphere)
+          ray (ray (point 0 0 (/ (sqrt 2) 2)) (vektor 0 1 0))
+          intersections [(intersection (- (/ (sqrt 2) 2)) shape) (intersection (/ (sqrt 2) 2) shape)]
+          comps (prepare-computation (intersections 1) ray intersections)]
+      (is (roughly 1.0 (schlick comps)))))
+
+  (testing "should approximate with a perpendicular viewing angle"
+    (let [shape (glass-sphere)
+          ray (ray (point 0 0 0) (vektor 0 1 0))
+          intersections [(intersection -1 shape) (intersection 1 shape)]
+          comps (prepare-computation (intersections 1) ray intersections)]
+      (is (roughly 0.04 (schlick comps)))))
+
+  (testing "should approximate when n2 > n1"
+    (let [shape (glass-sphere)
+          ray (ray (point 0 0.99 -2) (vektor 0 0 1))
+          intersections [(intersection 1.8589 shape)]
+          comps (prepare-computation (intersections 0) ray intersections)]
+      (is (roughly 0.48873 (schlick comps))))))

@@ -47,4 +47,9 @@
     (let [local-ray (ray (point -5 0 -5) (vektor 0 0 1))
           sphere (sphere :transform (translation 5 0 0))
           xs (local-intersect sphere local-ray)]
-      (is (roughly [] (mapv :t xs))))))
+      (is (roughly [] (mapv :t xs)))))
+
+  (testing "should have a helper for producing a sphere with a glassy material"
+    (let [sphere (glass-sphere)]
+      (is (= 1.0 (-> sphere :material :transparency)))
+      (is (= 1.5 (-> sphere :material :refractive-index))))))

@@ -17,7 +17,9 @@
       (is (= 0.9 (:diffuse material)))
       (is (= 0.9 (:specular material)))
       (is (= 200.0 (:shininess material)))
-      (is (= 0.0 (:reflective material)))))
+      (is (= 0.0 (:reflective material)))
+      (is (= 0.0 (:transparency material)))
+      (is (= 1.0 (:refractive-index material)))))
 
   (testing "should be able to set individual components"
     (let [color red
@@ -26,18 +28,24 @@
           specular 0.7
           shininess 190
           reflective 0.7
+          transparency 1.0
+          refractive-index 1.5
           material (material :color color
                              :ambient ambient
                              :diffuse diffuse
                              :specular specular
                              :shininess shininess
-                             :reflective reflective)]
+                             :reflective reflective
+                             :transparency transparency
+                             :refractive-index refractive-index)]
       (is (= color (:color material)))
       (is (= ambient (:ambient material)))
       (is (= diffuse (:diffuse material)))
       (is (= specular (:specular material)))
       (is (= shininess (:shininess material)))
-      (is (= reflective (:reflective material)))))
+      (is (= reflective (:reflective material)))
+      (is (= transparency (:transparency material)))
+      (is (= refractive-index (:refractive-index material)))))
 
   (testing "should be able to have a pattern"
     (let [material (material :pattern (stripe-pattern (color 1 1 1) (color 0 0 0))
