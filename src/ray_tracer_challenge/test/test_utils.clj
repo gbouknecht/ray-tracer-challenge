@@ -4,7 +4,7 @@
             [ray-tracer-challenge.logic.matrices :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]))
 
-(declare roughly not-roughly)
+(declare roughly not-roughly not-thrown?)
 
 (defn diff-smaller-than-epsilon? [x y]
   (cond (and (matrix? x) (matrix? y)) (diff-smaller-than-epsilon? (:values x) (:values y))
@@ -36,3 +36,14 @@
         :expected (str "not " (format-value x#))
         :actual   (format-value y#)})
      result#))
+
+(defmethod assert-expr 'not-thrown? [msg form]
+  (let [klass (second form)
+        body (nthnext form 2)]
+    `(try ~@body
+          (do-report {:type     :pass, :message ~msg,
+                      :expected (str "not " '~form), :actual nil})
+          (catch ~klass e#
+            (do-report {:type     :fail, :message ~msg,
+                        :expected (str "not " '~form), :actual e#})
+            e#))))

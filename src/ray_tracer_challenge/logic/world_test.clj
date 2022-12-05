@@ -1,10 +1,12 @@
 (ns ray-tracer-challenge.logic.world-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.math.numeric-tower :refer [sqrt]]
+            [clojure.test :refer :all]
             [ray-tracer-challenge.logic.colors :refer :all]
             [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.lights :refer :all]
             [ray-tracer-challenge.logic.materials :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
+            [ray-tracer-challenge.logic.planes :refer :all]
             [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
@@ -92,4 +94,43 @@
           ray (ray (point 0 0 5) (vektor 0 0 1))
           intersection (intersection 4 s2)
           comps (prepare-computation intersection ray)]
-      (is (roughly (color 0.1 0.1 0.1) (shade-hit world comps))))))
+      (is (roughly (color 0.1 0.1 0.1) (shade-hit world comps)))))
+
+  (testing "should be able to reflect color for a non-reflective material"
+    (let [world (default-world)
+          shape (assoc-in (second (:objects world)) [:material :ambient] 1)
+          ray (ray (point 0 0 0) (vektor 0 0 1))
+          intersection (intersection 1 shape)
+          comps (prepare-computation intersection ray)]
+      (is (roughly black (reflected-color world comps)))))
+
+  (testing "should be able to reflect color for a reflective material"
+    (let [shape (plane :transform (translation 0 -1 0) :material (material :reflective 0.5))
+          world (update (default-world) :objects conj shape)
+          ray (ray (point 0 0 -3) (vektor 0 (- (/ (sqrt 2) 2)) (/ (sqrt 2) 2)))
+          intersection (intersection (sqrt 2) shape)
+          comps (prepare-computation intersection ray)]
+      (is (roughly (color 0.19033 0.23792 0.14274) (reflected-color world comps)))))
+
+  (testing "should be able to shade with a reflective material"
+    (let [shape (plane :transform (translation 0 -1 0) :material (material :reflective 0.5))
+          world (update (default-world) :objects conj shape)
+          ray (ray (point 0 0 -3) (vektor 0 (- (/ (sqrt 2) 2)) (/ (sqrt 2) 2)))
+          intersection (intersection (sqrt 2) shape)
+          comps (prepare-computation intersection ray)]
+      (is (roughly (color 0.87676 0.92434 0.82917) (shade-hit world comps)))))
+
+  (testing "should be able to handle mutually reflective surfaces"
+    (let [world (world :light (point-light (point 0 0 0) white)
+                       :objects [(plane :transform (translation 0 -1 0) :material (material :reflective 1))
+                                 (plane :transform (translation 0 1 0) :material (material :reflective 1) )])
+          ray (ray (point 0 0 0) (vektor 0 1 0))]
+      (is (not-thrown? StackOverflowError (color-at world ray)))))
+
+  (testing "should reflected color at maximum recursive depth"
+    (let [shape (plane :transform (translation 0 -1 0) (material :reflective 0.5))
+          world (update (default-world) :objects conj shape)
+          ray (ray (point 0 0 -3) (vektor 0 (- (/ (sqrt 2) 2)) (/ (sqrt 2) 2)))
+          intersection (intersection (sqrt 2) shape)
+          comps (prepare-computation intersection ray)]
+      (is (roughly black (reflected-color world comps 0))))))
