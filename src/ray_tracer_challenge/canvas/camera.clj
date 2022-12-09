@@ -30,8 +30,7 @@
 (defn render [camera world]
   (let [width (:hsize camera)
         height (:vsize camera)
-        write-pixel (fn [canvas [x y]]
-                      (let [ray (ray-for-pixel camera x y)
-                            color (color-at world ray)]
-                        (write-pixel canvas x y color)))]
-    (reduce write-pixel (canvas width height) (for [x (range width) y (range height)] [x y]))))
+        coords (for [x (range width) y (range height)] [x y])
+        color-at (fn [[x y]] [[x y] (color-at world (ray-for-pixel camera x y))])
+        write-pixel (fn [canvas [[x y] color]] (write-pixel canvas x y color))]
+    (reduce write-pixel (canvas width height) (pmap color-at coords))))
