@@ -9,7 +9,8 @@
             [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
-            [ray-tracer-challenge.logic.world :refer :all]))
+            [ray-tracer-challenge.logic.world :refer :all]
+            [ray-tracer-challenge.putting-it-together.progress-reporter :refer :all]))
 
 (defn -main []
   (let [wall (fn [factor]
@@ -31,5 +32,5 @@
                                        :material (material :color (color 0 1 1)))])
         camera (camera 100 50 (/ Math/PI 2)
                        :transform (view-transform (point 1.9 2 -7) (point 0 1 0) (vektor 0 1 0)))
-        canvas (render camera world)]
+        canvas (render camera world report-progress)]
     (spit "target/hexagonal-room-scene.ppm" (canvas-to-ppm canvas))))

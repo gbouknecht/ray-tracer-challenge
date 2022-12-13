@@ -27,10 +27,22 @@
         origin (multiply-matrix-by-tuple (inverse (:transform camera)) (point 0 0 0))
         direction (normalize-vektor (subtract-tuples pixel origin))]
     (ray origin direction)))
-(defn render [camera world]
-  (let [width (:hsize camera)
-        height (:vsize camera)
-        coords (for [x (range width) y (range height)] [x y])
-        color-at (fn [[x y]] [[x y] (color-at world (ray-for-pixel camera x y))])
-        write-pixel (fn [canvas [[x y] color]] (write-pixel canvas x y color))]
-    (reduce write-pixel (canvas width height) (pmap color-at coords))))
+(defn render
+  ([camera world] (render camera world nil))
+  ([camera world report-progress]
+   (let [width (:hsize camera)
+         height (:vsize camera)
+         percentage (let [divider (/ (* width height) 100.0)] (fn [index] (/ (inc index) divider)))
+         start-time (System/currentTimeMillis)
+         progress (fn [index]
+                    (let [percentage (percentage index)
+                          elapsed-time (- (System/currentTimeMillis) start-time)
+                          estimated-time-left (if (> percentage 0)
+                                                (* (/ elapsed-time percentage) (- 100 percentage)))]
+                      [percentage elapsed-time estimated-time-left]))
+         coords (for [x (range width) y (range height)] [x y])
+         color-at (fn [[x y]] [[x y] (color-at world (ray-for-pixel camera x y))])
+         write-pixel (fn [canvas [index [x y] color]]
+                       (do (if report-progress (apply report-progress (progress index)))
+                           (write-pixel canvas x y color)))]
+     (reduce write-pixel (canvas width height) (->> coords (pmap color-at) (map-indexed (fn [index item] (concat [index] item))))))))

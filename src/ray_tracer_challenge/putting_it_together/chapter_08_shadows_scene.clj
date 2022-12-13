@@ -8,7 +8,8 @@
             [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
-            [ray-tracer-challenge.logic.world :refer :all]))
+            [ray-tracer-challenge.logic.world :refer :all]
+            [ray-tracer-challenge.putting-it-together.progress-reporter :refer :all]))
 
 (defn -main []
   (let [wall (sphere :transform (multiply-matrices (translation 0 0 5) (scaling 10 10 1))
@@ -40,5 +41,5 @@
                      :objects [wall s1 s2 s3 s4 s5 s6 s7])
         camera (camera 100 50 (/ Math/PI 3)
                        :transform (view-transform (point 0 0.5 -5) (point 0 0.5 0) (vektor 0 1 0)))
-        canvas (render camera world)]
+        canvas (render camera world report-progress)]
     (spit "target/shadows-scene.ppm" (canvas-to-ppm canvas))))

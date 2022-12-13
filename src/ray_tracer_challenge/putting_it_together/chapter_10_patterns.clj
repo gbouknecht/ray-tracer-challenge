@@ -9,7 +9,8 @@
             [ray-tracer-challenge.logic.planes :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
-            [ray-tracer-challenge.logic.world :refer :all]))
+            [ray-tracer-challenge.logic.world :refer :all]
+            [ray-tracer-challenge.putting-it-together.progress-reporter :refer :all]))
 
 (defn- blended-pattern [& patterns]
   (letfn [(blended-pattern-at [pattern point]
@@ -24,5 +25,5 @@
                                                                                     (gradient-pattern white black))))])
         camera (camera 100 50 (/ Math/PI 2)
                        :transform (view-transform (point 1.9 3 -7) (point 0 1 0) (vektor 0 1 0)))
-        canvas (render camera world)]
+        canvas (render camera world report-progress)]
     (spit "target/patterns.ppm" (canvas-to-ppm canvas))))

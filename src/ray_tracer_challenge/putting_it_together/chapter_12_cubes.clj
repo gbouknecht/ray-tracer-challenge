@@ -12,7 +12,8 @@
             [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.transformations :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
-            [ray-tracer-challenge.logic.world :refer :all]))
+            [ray-tracer-challenge.logic.world :refer :all]
+            [ray-tracer-challenge.putting-it-together.progress-reporter :refer :all]))
 
 (defn -main []
   (let [objects {:room         (cube :transform (scaling 10 5 15)
@@ -57,6 +58,6 @@
                      :objects (vals objects))
         camera (camera 100 50 (/ Math/PI 2)
                        :transform (view-transform (point 3 3 -7) (point 0 0 0) (vektor 0 1 0)))
-        canvas (render camera world)]
+        canvas (render camera world report-progress)]
     (spit "target/cubes.ppm" (canvas-to-ppm canvas))
     (shutdown-agents)))
