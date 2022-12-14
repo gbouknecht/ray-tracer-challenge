@@ -18,7 +18,7 @@
                       t2 (/ (+ (- b) (sqrt discriminant)) (* 2 a))]
                   [(intersection t1 sphere) (intersection t2 sphere)]))))
           (local-normal-at [_ local-point] (subtract-tuples local-point (point 0 0 0)))]
-    (shape transform material local-intersect local-normal-at)))
+    (shape :sphere transform material local-intersect local-normal-at)))
 (defn glass-sphere [& {:keys [transform material]}]
   (-> (sphere :transform transform :material material)
       (update :material #(assoc % :transparency 1.0 :refractive-index 1.5))))

@@ -19,7 +19,7 @@
           (local-normal-at [shape local-point]
             (reset! saved-args [shape local-point])
             (let [[x y z] local-point] (vektor x y z)))]
-    (shape transform material local-intersect local-normal-at)))
+    (shape :test-shape transform material local-intersect local-normal-at)))
 
 (deftest about-shapes
 

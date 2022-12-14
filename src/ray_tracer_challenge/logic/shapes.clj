@@ -4,8 +4,9 @@
             [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 
-(defn shape [transform material local-intersect local-normal-at]
+(defn shape [type transform material local-intersect local-normal-at]
   {:uuid            (random-uuid)
+   :type            type
    :transform       (or transform identity-matrix)
    :material        (or material (materials/material))
    :local-intersect local-intersect

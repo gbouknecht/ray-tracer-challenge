@@ -8,8 +8,8 @@
   (let [t-min-numerator (- -1 origin)
         t-max-numerator (- 1 origin)
         [t-min t-max] (if (>= (abs direction) epsilon)
-                      [(/ t-min-numerator direction) (/ t-max-numerator direction)]
-                      [(* t-min-numerator ##Inf) (* t-max-numerator ##Inf)])]
+                        [(/ t-min-numerator direction) (/ t-max-numerator direction)]
+                        [(* t-min-numerator ##Inf) (* t-max-numerator ##Inf)])]
     (sort [t-min t-max])))
 
 (defn cube [& {:keys [transform material]}]
@@ -28,4 +28,4 @@
                 (abs x) (vektor x 0 0)
                 (abs y) (vektor 0 y 0)
                 (abs z) (vektor 0 0 z))))]
-    (shape transform material local-intersect local-normal-at)))
+    (shape :cube transform material local-intersect local-normal-at)))
