@@ -33,16 +33,9 @@
    (let [width (:hsize camera)
          height (:vsize camera)
          percentage (let [divider (/ (* width height) 100.0)] (fn [index] (/ (inc index) divider)))
-         start-time (System/currentTimeMillis)
-         progress (fn [index]
-                    (let [percentage (percentage index)
-                          elapsed-time (- (System/currentTimeMillis) start-time)
-                          estimated-time-left (if (> percentage 0)
-                                                (* (/ elapsed-time percentage) (- 100 percentage)))]
-                      [percentage elapsed-time estimated-time-left]))
          coords (for [x (range width) y (range height)] [x y])
          color-at (fn [[x y]] [[x y] (color-at world (ray-for-pixel camera x y))])
          write-pixel (fn [canvas [index [x y] color]]
-                       (do (if report-progress (apply report-progress (progress index)))
+                       (do (if report-progress (report-progress (percentage index)))
                            (write-pixel canvas x y color)))]
      (reduce write-pixel (canvas width height) (->> coords (pmap color-at) (map-indexed (fn [index item] (concat [index] item))))))))

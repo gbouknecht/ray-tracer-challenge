@@ -32,5 +32,5 @@
                                        :material (material :color (color 0 1 1)))])
         camera (camera 100 50 (/ Math/PI 2)
                        :transform (view-transform (point 1.9 2 -7) (point 0 1 0) (vektor 0 1 0)))
-        canvas (render camera world report-progress)]
+        canvas (render camera world (make-report-progress-fn))]
     (spit "target/hexagonal-room-scene.ppm" (canvas-to-ppm canvas))))

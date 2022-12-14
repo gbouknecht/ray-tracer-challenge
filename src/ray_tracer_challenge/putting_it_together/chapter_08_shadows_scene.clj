@@ -41,5 +41,5 @@
                      :objects [wall s1 s2 s3 s4 s5 s6 s7])
         camera (camera 100 50 (/ Math/PI 3)
                        :transform (view-transform (point 0 0.5 -5) (point 0 0.5 0) (vektor 0 1 0)))
-        canvas (render camera world report-progress)]
+        canvas (render camera world (make-report-progress-fn))]
     (spit "target/shadows-scene.ppm" (canvas-to-ppm canvas))))
