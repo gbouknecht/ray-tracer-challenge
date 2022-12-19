@@ -42,11 +42,11 @@
                    reflected-color
                    refracted-color)))))
 (defn color-at
-  ([world ray] (color-at world ray 5))
-  ([world ray remaining]
+  ([world ray shape-to-parent] (color-at world ray 5 shape-to-parent))
+  ([world ray remaining shape-to-parent]
    (let [intersections (intersect-world world ray)
          hit (hit intersections)]
-     (if (nil? hit) black (shade-hit world (prepare-computation hit ray intersections) remaining)))))
+     (if (nil? hit) black (shade-hit world (prepare-computation hit ray intersections shape-to-parent) remaining)))))
 (defn reflected-color
   ([world comps] (reflected-color world comps 5))
   ([world comps remaining]
@@ -54,7 +54,7 @@
      (if (or (< remaining 1) (= reflective 0.0))
        black
        (let [reflect-ray (ray (:over-point comps) (:reflect-vektor comps))
-             color (color-at world reflect-ray (dec remaining))]
+             color (color-at world reflect-ray (dec remaining) (:shape-to-parent comps))]
          (multiply-color color reflective))))))
 (defn refracted-color [world comps remaining]
   (let [transparency (-> comps :object :material :transparency)
@@ -67,4 +67,4 @@
             direction (subtract-tuples (multiply-tuple (:normal-vektor comps) (- (* n-ratio cos-i) cos-t))
                                        (multiply-tuple (:eye-vektor comps) n-ratio))
             refract-ray (ray (:under-point comps) direction)]
-        (multiply-color (color-at world refract-ray (dec remaining)) transparency)))))
+        (multiply-color (color-at world refract-ray (dec remaining) (:shape-to-parent comps)) transparency)))))

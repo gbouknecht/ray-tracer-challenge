@@ -19,27 +19,29 @@
         (map #(get-in % [:material :refractive-index] 1.0) [from-object to-object])
         (recur (rest intersections) containing-objects)))))
 (defn prepare-computation
-  ([intersection ray] (prepare-computation intersection ray [intersection]))
-  ([intersection ray intersections]
+  ([intersection ray shape-to-parent]
+   (prepare-computation intersection ray [intersection] shape-to-parent))
+  ([intersection ray intersections shape-to-parent]
    (let [t (:t intersection)
          object (:object intersection)
          point (position ray t)
          eye-vektor (negate-tuple (:direction ray))
-         [normal-vektor inside] (let [normal-vektor (normal-at object point)
+         [normal-vektor inside] (let [normal-vektor (normal-at object point shape-to-parent)
                                       inside (neg? (dot-product-tuples normal-vektor eye-vektor))]
                                   [(if inside (negate-tuple normal-vektor) normal-vektor) inside])
          [n1 n2] (find-n1-n2 intersection intersections)]
-     {:t              t
-      :object         object
-      :point          point
-      :eye-vektor     eye-vektor
-      :inside         inside
-      :normal-vektor  normal-vektor
-      :over-point     (add-tuples point (multiply-tuple normal-vektor epsilon))
-      :under-point    (subtract-tuples point (multiply-tuple normal-vektor epsilon))
-      :reflect-vektor (reflect (:direction ray) normal-vektor)
-      :n1             n1
-      :n2             n2})))
+     {:t               t
+      :object          object
+      :point           point
+      :eye-vektor      eye-vektor
+      :inside          inside
+      :normal-vektor   normal-vektor
+      :over-point      (add-tuples point (multiply-tuple normal-vektor epsilon))
+      :under-point     (subtract-tuples point (multiply-tuple normal-vektor epsilon))
+      :reflect-vektor  (reflect (:direction ray) normal-vektor)
+      :n1              n1
+      :n2              n2
+      :shape-to-parent shape-to-parent})))
 (defn schlick [comps]
   (let [n1 (:n1 comps)
         n2 (:n2 comps)

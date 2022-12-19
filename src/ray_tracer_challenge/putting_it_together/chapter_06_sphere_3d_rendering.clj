@@ -30,7 +30,7 @@
                         black
                         (let [point (position ray (:t hit))
                               eye-vektor (negate-tuple (:direction ray))
-                              normal-vektor (normal-at (:object hit) point)]
+                              normal-vektor (normal-at (:object hit) point {})]
                           (lighting (-> hit :object :material) shape light point eye-vektor normal-vektor false)))))
         write-pixel (fn [canvas [x y]] (write-pixel canvas x y (hit-color x y)))
         canvas (reduce write-pixel (canvas canvas-pixels canvas-pixels) coords)]

@@ -2,6 +2,7 @@
   (:require [ray-tracer-challenge.canvas.canvas :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
+            [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
             [ray-tracer-challenge.logic.world :refer :all]))
 
@@ -34,7 +35,8 @@
          height (:vsize camera)
          percentage (let [divider (/ (* width height) 100.0)] (fn [index] (/ (inc index) divider)))
          coords (for [x (range width) y (range height)] [x y])
-         color-at (fn [[x y]] [[x y] (color-at world (ray-for-pixel camera x y))])
+         shape-to-parent (shape-to-parent (:objects world))
+         color-at (fn [[x y]] [[x y] (color-at world (ray-for-pixel camera x y) shape-to-parent)])
          write-pixel (fn [canvas [index [x y] color]]
                        (do (if report-progress (report-progress (percentage index)))
                            (write-pixel canvas x y color)))]
