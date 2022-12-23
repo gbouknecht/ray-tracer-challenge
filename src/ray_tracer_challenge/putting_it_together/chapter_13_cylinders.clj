@@ -2,7 +2,7 @@
   (:require [ray-tracer-challenge.canvas.camera :refer :all]
             [ray-tracer-challenge.canvas.canvas :refer :all]
             [ray-tracer-challenge.logic.colors :refer :all]
-            [ray-tracer-challenge.logic.constants :refer :all]
+            [ray-tracer-challenge.logic.common :refer :all]
             [ray-tracer-challenge.logic.cubes :refer :all]
             [ray-tracer-challenge.logic.cylinders-and-cones :refer :all]
             [ray-tracer-challenge.logic.lights :refer :all]

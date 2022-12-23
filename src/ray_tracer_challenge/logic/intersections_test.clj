@@ -1,7 +1,7 @@
 (ns ray-tracer-challenge.logic.intersections-test
   (:require [clojure.math.numeric-tower :refer [sqrt]]
             [clojure.test :refer :all]
-            [ray-tracer-challenge.logic.constants :refer :all]
+            [ray-tracer-challenge.logic.common :refer :all]
             [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.spheres :refer :all]

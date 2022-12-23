@@ -1,6 +1,6 @@
 (ns ray-tracer-challenge.test.test-utils
   (:require [clojure.test :refer :all]
-            [ray-tracer-challenge.logic.constants :refer :all]
+            [ray-tracer-challenge.logic.common :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]))
 

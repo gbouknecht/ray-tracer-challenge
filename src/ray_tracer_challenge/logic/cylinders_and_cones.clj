@@ -1,11 +1,10 @@
 (ns ray-tracer-challenge.logic.cylinders-and-cones
   (:require [clojure.math.numeric-tower :refer [sqrt]]
-            [ray-tracer-challenge.logic.constants :refer :all]
+            [ray-tracer-challenge.logic.common :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 
-(defn- close-to-zero? [value] (< (abs value) epsilon))
 (defn- intersect-caps [shape local-ray]
   (let [[origin-x origin-y origin-z] (:origin local-ray)
         [direction-x direction-y direction-z] (:direction local-ray)

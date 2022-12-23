@@ -11,4 +11,5 @@
                           (filter-on-chapter (comp name ns-name))
                           (sort-by (comp name ns-name)))]
     (println (str "Running " chapter-ns))
-    (apply (ns-resolve chapter-ns (symbol "-main")) nil)))
+    (apply (ns-resolve chapter-ns (symbol "-main")) nil))
+  (println "Finished"))

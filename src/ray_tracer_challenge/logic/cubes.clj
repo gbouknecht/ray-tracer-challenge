@@ -1,5 +1,5 @@
 (ns ray-tracer-challenge.logic.cubes
-  (:require [ray-tracer-challenge.logic.constants :refer :all]
+  (:require [ray-tracer-challenge.logic.common :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
