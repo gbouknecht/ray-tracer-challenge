@@ -3,6 +3,7 @@
             [clojure.test :refer :all]
             [ray-tracer-challenge.logic.materials :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
+            [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.spheres :refer :all]
@@ -17,7 +18,7 @@
   (letfn [(local-intersect [shape local-ray]
             (reset! saved-args [shape local-ray])
             (reset! saved-result [(intersection 1 shape) (intersection 2 shape)]))
-          (local-normal-at [shape local-point]
+          (local-normal-at [shape local-point _]
             (reset! saved-args [shape local-point])
             (let [[x y z] local-point] (vektor x y z)))]
     (shape :test-shape transform material local-intersect local-normal-at)))
@@ -59,14 +60,14 @@
 
   (testing "should be able to calculate normal on a translated shape"
     (let [shape (test-shape :transform (translation 0 1 0))
-          normal (normal-at shape (point 0 1.70711 -0.70711) {})
+          normal (normal-at shape (point 0 1.70711 -0.70711) nil {})
           [saved-shape _] @saved-args]
       (is (= shape saved-shape))
       (is (roughly (vektor 0 0.70711 -0.70711) normal))))
 
   (testing "should be able to calculate normal on a transformed shape"
     (let [shape (test-shape :transform (multiply-matrices (scaling 1 0.5 1) (rotation-z (/ Math/PI 5))))
-          normal (normal-at shape (point 0 (/ (sqrt 2) 2) (- (/ (sqrt 2) 2))) {})
+          normal (normal-at shape (point 0 (/ (sqrt 2) 2) (- (/ (sqrt 2) 2))) nil {})
           [saved-shape _] @saved-args]
       (is (= shape saved-shape))
       (is (roughly (vektor 0 0.97014 -0.24254) normal)))))
@@ -126,6 +127,7 @@
           shape-to-parent (shape-to-parent [group1])]
       (is (roughly (vektor 0.28570 0.42854 -0.85716) (normal-at sphere
                                                                 (point 1.7321 1.1547 -5.5774)
+                                                                nil
                                                                 shape-to-parent))))))
 
 (deftest about-world-to-object

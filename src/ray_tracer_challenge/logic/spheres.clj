@@ -1,7 +1,7 @@
 (ns ray-tracer-challenge.logic.spheres
   (:require [clojure.math.numeric-tower :refer [sqrt]]
+            [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
-            [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 
@@ -17,7 +17,7 @@
                 (let [t1 (/ (- (- b) (sqrt discriminant)) (* 2 a))
                       t2 (/ (+ (- b) (sqrt discriminant)) (* 2 a))]
                   [(intersection t1 sphere) (intersection t2 sphere)]))))
-          (local-normal-at [_ local-point] (subtract-tuples local-point (point 0 0 0)))]
+          (local-normal-at [_ local-point _] (subtract-tuples local-point (point 0 0 0)))]
     (shape :sphere transform material local-intersect local-normal-at)))
 (defn glass-sphere [& {:keys [transform material]}]
   (-> (sphere :transform transform :material material)

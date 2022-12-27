@@ -1,6 +1,7 @@
 (ns ray-tracer-challenge.logic.spheres-test
   (:require [clojure.math.numeric-tower :refer [sqrt]]
             [clojure.test :refer :all]
+            [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.materials :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
@@ -15,7 +16,7 @@
   (testing "should be able to calculate normal"
     (let [sphere (sphere)
           a (/ (sqrt 3) 3)]
-      (are [x p] (roughly x (local-normal-at sphere p))
+      (are [x p] (roughly x (local-normal-at sphere p nil))
                  (vektor 1 0 0) (point 1 0 0)
                  (vektor 0 1 0) (point 0 1 0)
                  (vektor 0 0 1) (point 0 0 1)
@@ -24,9 +25,9 @@
 
   (testing "should be able to calculate normal on a translated sphere"
     (let [sphere (sphere :transform (translation 0 1 0))]
-      (is (roughly (vektor 0 0.70711 -0.70711) (local-normal-at sphere (point 0 0.70711 -0.70711)))))
+      (is (roughly (vektor 0 0.70711 -0.70711) (local-normal-at sphere (point 0 0.70711 -0.70711) nil))))
     (let [sphere (sphere :transform (multiply-matrices (scaling 1 0.5 1) (rotation-z (/ Math/PI 5))))]
-      (is (roughly (vektor 0 0.70711 -0.70711) (local-normal-at sphere (point 0 (/ (sqrt 2) 2) (- (/ (sqrt 2) 2))))))))
+      (is (roughly (vektor 0 0.70711 -0.70711) (local-normal-at sphere (point 0 (/ (sqrt 2) 2) (- (/ (sqrt 2) 2))) nil)))))
 
   (testing "should be able to calculate intersection"
     (let [sphere (sphere)]

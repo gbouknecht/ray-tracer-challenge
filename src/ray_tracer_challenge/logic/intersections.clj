@@ -3,9 +3,15 @@
             [ray-tracer-challenge.logic.common :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.shapes :refer :all]
-            [ray-tracer-challenge.logic.spheres :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 
+(defn intersection
+  ([t object] (intersection t object nil nil))
+  ([t object u v] {:t t :object object :u u :v v}))
+(defn intersection? [x] (and (map? x) (= (set (keys x)) #{:t :object :u :v})))
+(defn hit [intersections]
+  (when-let [positive-intersections (seq (filter #(pos? (:t %)) intersections))]
+    (apply min-key :t positive-intersections)))
 (defn- find-n1-n2 [hit intersections]
   (loop [intersections intersections
          containing-objects []]
@@ -26,7 +32,7 @@
          object (:object intersection)
          point (position ray t)
          eye-vektor (negate-tuple (:direction ray))
-         [normal-vektor inside] (let [normal-vektor (normal-at object point shape-to-parent)
+         [normal-vektor inside] (let [normal-vektor (normal-at object point intersection shape-to-parent)
                                       inside (neg? (dot-product-tuples normal-vektor eye-vektor))]
                                   [(if inside (negate-tuple normal-vektor) normal-vektor) inside])
          [n1 n2] (find-n1-n2 intersection intersections)]

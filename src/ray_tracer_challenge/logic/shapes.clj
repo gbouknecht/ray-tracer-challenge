@@ -14,7 +14,7 @@
 (declare intersect)
 (defn group [& {:keys [transform children]}]
   (letfn [(local-intersect [group local-ray] (->> (:children group) (mapcat #(intersect % local-ray)) (sort-by :t)))
-          (local-normal-at [_ _] (throw (UnsupportedOperationException. "local-normal-at not support for groups")))]
+          (local-normal-at [_ _ _] (throw (UnsupportedOperationException. "local-normal-at not support for groups")))]
     (-> (shape :group transform nil local-intersect local-normal-at)
         (assoc :children (or children [])))))
 (defn shape-to-parent [shapes]
@@ -36,8 +36,8 @@
 (defn intersect [shape ray]
   (let [local-ray (transform ray (inverse (:transform shape)))]
     (local-intersect shape local-ray)))
-(defn local-normal-at [shape local-point] ((:local-normal-at shape) shape local-point))
-(defn normal-at [shape world-point shape-to-parent]
+(defn local-normal-at [shape local-point hit] ((:local-normal-at shape) shape local-point hit))
+(defn normal-at [shape world-point hit shape-to-parent]
   (let [local-point (world-to-object shape world-point shape-to-parent)
-        local-normal (local-normal-at shape local-point)]
+        local-normal (local-normal-at shape local-point hit)]
     (normal-to-world shape local-normal shape-to-parent)))

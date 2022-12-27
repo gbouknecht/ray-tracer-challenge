@@ -1,6 +1,7 @@
 (ns ray-tracer-challenge.logic.cubes-test
   (:require [clojure.test :refer :all]
             [ray-tracer-challenge.logic.cubes :refer :all]
+            [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
@@ -31,7 +32,7 @@
 
   (testing "should be able to calculate normal"
     (let [cube (cube)]
-      (are [normal point] (roughly normal (local-normal-at cube point))
+      (are [normal point] (roughly normal (local-normal-at cube point nil))
                           (vektor 1, 0, 0) (point 1, 0.5, -0.8)
                           (vektor -1, 0, 0) (point -1, -0.2, 0.9)
                           (vektor 0, 1, 0) (point -0.4, 1, -0.1)

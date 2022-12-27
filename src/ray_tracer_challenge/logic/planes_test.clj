@@ -10,9 +10,9 @@
 
   (testing "should have a constant normal everywhere"
     (let [plane (plane)]
-      (is (roughly (vektor 0 1 0) (local-normal-at plane (point 0 0 0))))
-      (is (roughly (vektor 0 1 0) (local-normal-at plane (point 10 0 -10))))
-      (is (roughly (vektor 0 1 0) (local-normal-at plane (point -5 0 150))))))
+      (is (roughly (vektor 0 1 0) (local-normal-at plane (point 0 0 0) nil)))
+      (is (roughly (vektor 0 1 0) (local-normal-at plane (point 10 0 -10) nil)))
+      (is (roughly (vektor 0 1 0) (local-normal-at plane (point -5 0 150) nil)))))
 
   (testing "should have no intersection with a parallel ray"
     (let [plane (plane)

@@ -1,6 +1,6 @@
 (ns ray-tracer-challenge.logic.cubes
   (:require [ray-tracer-challenge.logic.common :refer :all]
-            [ray-tracer-challenge.logic.rays :refer :all]
+            [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 
@@ -22,7 +22,7 @@
                   t-min (max xt-min yt-min zt-min)
                   t-max (min xt-max yt-max zt-max)]
               (if (> t-min t-max) [] [(intersection t-min cube) (intersection t-max cube)])))
-          (local-normal-at [_ local-point]
+          (local-normal-at [_ local-point _]
             (let [[x y z] local-point]
               (condp = (max (abs x) (abs y) (abs z))
                 (abs x) (vektor x 0 0)

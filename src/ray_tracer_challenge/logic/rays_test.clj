@@ -23,41 +23,6 @@
       (is (roughly (point 1 3 4) (position ray -1)))
       (is (roughly (point 4.5 3 4) (position ray 2.5)))))
 
-  (testing "should be able to encapsulate t and object as an intersection"
-    (let [sphere (sphere)
-          intersection (intersection 3.5 sphere)]
-      (is (= 3.5 (:t intersection)))
-      (is (= sphere (:object intersection)))))
-
-  (testing "should be able to check if something is an intersection"
-    (let [intersection (intersection 3.5 (sphere))]
-      (is (intersection? intersection))
-      (is (not (intersection? (dissoc intersection :t))))
-      (is (not (intersection? (dissoc intersection :object)))))
-    (is (not (intersection? [1 2 3])))
-    (is (not (intersection? {:a 1 :b 2}))))
-
-  (testing "should hit the first intersection with positive t"
-    (let [sphere (sphere)]
-      (let [intersection1 (intersection 1 sphere)
-            intersection2 (intersection 2 sphere)
-            intersections [intersection2 intersection1]]
-        (is (roughly intersection1 (hit intersections))))
-      (let [intersection1 (intersection -1 sphere)
-            intersection2 (intersection 1 sphere)
-            intersections [intersection1 intersection2]]
-        (is (roughly intersection2 (hit intersections))))
-      (let [intersection1 (intersection -2 sphere)
-            intersection2 (intersection -1 sphere)
-            intersections [intersection1 intersection2]]
-        (is (nil? (hit intersections))))
-      (let [intersection1 (intersection 5 sphere)
-            intersection2 (intersection 7 sphere)
-            intersection3 (intersection -3 sphere)
-            intersection4 (intersection 2 sphere)
-            intersections [intersection1 intersection2 intersection3 intersection4]]
-        (is (roughly intersection4 (hit intersections))))))
-
   (testing "should be able to translate a ray"
     (let [ray1 (ray (point 1 2 3) (vektor 0 1 0))
           matrix (translation 3 4 5)

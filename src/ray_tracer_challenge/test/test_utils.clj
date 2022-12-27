@@ -1,8 +1,8 @@
 (ns ray-tracer-challenge.test.test-utils
   (:require [clojure.test :refer :all]
             [ray-tracer-challenge.logic.common :refer :all]
-            [ray-tracer-challenge.logic.matrices :refer :all]
-            [ray-tracer-challenge.logic.rays :refer :all]))
+            [ray-tracer-challenge.logic.intersections :refer :all]
+            [ray-tracer-challenge.logic.matrices :refer :all]))
 
 (declare roughly not-roughly not-thrown?)
 

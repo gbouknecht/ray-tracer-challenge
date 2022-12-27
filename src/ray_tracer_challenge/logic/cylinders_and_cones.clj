@@ -1,7 +1,7 @@
 (ns ray-tracer-challenge.logic.cylinders-and-cones
   (:require [clojure.math.numeric-tower :refer [sqrt]]
             [ray-tracer-challenge.logic.common :refer :all]
-            [ray-tracer-challenge.logic.rays :refer :all]
+            [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]))
 
@@ -51,7 +51,7 @@
                                                                  (filter within-range?)
                                                                  (mapv make-intersection))))))]
                             (into intersections (intersect-caps shape local-ray))))
-        local-normal-at (fn [shape local-point]
+        local-normal-at (fn [shape local-point _]
                           (let [[x y z] local-point
                                 dist (+ (* x x) (* z z))
                                 radius (condp = (:type shape) :cylinder 1 :cone y)]

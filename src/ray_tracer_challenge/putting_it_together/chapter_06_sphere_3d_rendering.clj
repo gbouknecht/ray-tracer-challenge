@@ -1,6 +1,7 @@
 (ns ray-tracer-challenge.putting-it-together.chapter-06-sphere-3d-rendering
   (:require [ray-tracer-challenge.canvas.canvas :refer :all]
             [ray-tracer-challenge.logic.colors :refer :all]
+            [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.lights :refer :all]
             [ray-tracer-challenge.logic.materials :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
@@ -30,7 +31,7 @@
                         black
                         (let [point (position ray (:t hit))
                               eye-vektor (negate-tuple (:direction ray))
-                              normal-vektor (normal-at (:object hit) point {})]
+                              normal-vektor (normal-at (:object hit) point nil {})]
                           (lighting (-> hit :object :material) shape light point eye-vektor normal-vektor false)))))
         write-pixel (fn [canvas [x y]] (write-pixel canvas x y (hit-color x y)))
         canvas (reduce write-pixel (canvas canvas-pixels canvas-pixels) coords)]

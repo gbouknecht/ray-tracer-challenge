@@ -1,6 +1,7 @@
 (ns ray-tracer-challenge.putting-it-together.chapter-05-casting-rays-at-sphere
   (:require [ray-tracer-challenge.canvas.canvas :refer :all]
             [ray-tracer-challenge.logic.colors :refer :all]
+            [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.matrices :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.shapes :refer :all]

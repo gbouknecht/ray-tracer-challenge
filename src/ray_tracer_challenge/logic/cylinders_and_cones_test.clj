@@ -2,6 +2,7 @@
   (:require [clojure.math.numeric-tower :refer [sqrt]]
             [clojure.test :refer :all]
             [ray-tracer-challenge.logic.cylinders-and-cones :refer :all]
+            [ray-tracer-challenge.logic.intersections :refer :all]
             [ray-tracer-challenge.logic.rays :refer :all]
             [ray-tracer-challenge.logic.shapes :refer :all]
             [ray-tracer-challenge.logic.tuples :refer :all]
@@ -26,7 +27,7 @@
 
   (testing "should be able to calculate normal"
     (let [cylinder (cylinder)]
-      (are [normal point] (roughly normal (local-normal-at cylinder point))
+      (are [normal point] (roughly normal (local-normal-at cylinder point nil))
                           (vektor 1 0 0) (point 1 0 0)
                           (vektor 0 0 -1) (point 0 5 -1)
                           (vektor 0 0 1) (point 0 -2 1)
@@ -59,7 +60,7 @@
 
   (testing "should be able to calculate normal on caps of closed cylinder"
     (let [cylinder (cylinder :minimum 1 :maximum 2 :closed true)]
-      (are [normal point] (roughly normal (local-normal-at cylinder point))
+      (are [normal point] (roughly normal (local-normal-at cylinder point nil))
                           (vektor 0 -1 0) (point 0 1 0)
                           (vektor 0 -1 0) (point 0.5 1 0)
                           (vektor 0 -1 0) (point 0 1 0.5)
@@ -92,7 +93,7 @@
 
   (testing "should be able to calculate normal"
     (let [cone (cone)]
-      (are [normal point] (roughly normal (local-normal-at cone point))
+      (are [normal point] (roughly normal (local-normal-at cone point nil))
                           (vektor 0 0 0) (point 0 0 0)
                           (vektor 1 (- (sqrt 2)) 1) (point 1 1 1)
                           (vektor -1 1 0) (point -1 -1 0)))))

@@ -7,8 +7,3 @@
 (defn transform [ray matrix]
   {:origin    (multiply-matrix-by-tuple matrix (:origin ray))
    :direction (multiply-matrix-by-tuple matrix (:direction ray))})
-(defn intersection [t object] {:t t :object object})
-(defn intersection? [x] (and (map? x) (= (set (keys x)) #{:t :object})))
-(defn hit [intersections]
-  (when-let [positive-intersections (seq (filter #(pos? (:t %)) intersections))]
-    (apply min-key :t positive-intersections)))
