@@ -28,6 +28,15 @@
       (is (roughly (point 1 0 0) (get-vertex parsed-file 3)))
       (is (roughly (point 1 1 0) (get-vertex parsed-file 4)))))
 
+  (testing "should process vertex normal records"
+    (let [file (str/join "\n" ["vn 0 0 1"
+                               "vn 0.707 0 -0.707"
+                               "vn 1 2 3"])
+          parsed-file (parse-obj-file file)]
+      (is (roughly (vektor 0 0 1) (get-vertex-normal parsed-file 1)))
+      (is (roughly (vektor 0.707 0 -0.707) (get-vertex-normal parsed-file 2)))
+      (is (roughly (vektor 1 2 3) (get-vertex-normal parsed-file 3)))))
+
   (testing "should process triangle data"
     (let [file (str/join "\n" ["v -1 1 0"
                                "v -1 0 0"
@@ -65,6 +74,27 @@
       (is (roughly (get-vertex parsed-file 4) (:p2 triangle3)))
       (is (roughly (get-vertex parsed-file 5) (:p3 triangle3)))))
 
+  (testing "should process faces data with normals"
+    (let [file (str/join "\n" ["v 0 1 0"
+                               "v -1 0 0"
+                               "v 1 0 0"
+                               ""
+                               "vn -1 0 0"
+                               "vn 1 0 0"
+                               "vn 0 1 0"
+                               ""
+                               "f 1//3 2//1 3//2"
+                               "f 1/0/3 2/102/1 3/14/2"])
+          parsed-file (parse-obj-file file)
+          [triangle1 triangle2] (:default-group parsed-file)]
+      (is (roughly (get-vertex parsed-file 1) (:p1 triangle1)))
+      (is (roughly (get-vertex parsed-file 2) (:p2 triangle1)))
+      (is (roughly (get-vertex parsed-file 3) (:p3 triangle1)))
+      (is (roughly (get-vertex-normal parsed-file 3) (:n1 triangle1)))
+      (is (roughly (get-vertex-normal parsed-file 1) (:n2 triangle1)))
+      (is (roughly (get-vertex-normal parsed-file 2) (:n3 triangle1)))
+      (is (= triangle1 triangle2))))
+
   (testing "should support named groups"
     (let [file (str/join "\n" ["v -1 1 0"
                                "v -1 0 0"
@@ -97,18 +127,26 @@
                                "v 1 0 0"
                                "v 1 1 0"
                                ""
+                               "vn -1 0 0"
+                               "vn 1 0 0"
+                               "vn 0 1 0"
+                               ""
                                "f 3 4 1"
                                "g FirstGroup"
-                               "f 1 2 3"
+                               "f 1//3 2//1 3//2"
                                "f 2 3 4"
                                "g SecondGroup"
                                "f 1 3 4"])
           group (obj-to-group (parse-obj-file file))
-          triangles-to-points (fn [triangles] (map #(vector (:p1 %) (:p2 %) (:p3 %)) triangles))]
-      (is (= (set [[[(point 1.0 0.0 0.0) (point 1.0 1.0 0.0) (point -1.0 1.0 0.0)]]
-                   [[(point -1.0 1.0 0.0) (point -1.0 0.0 0.0) (point 1.0 0.0 0.0)]
-                    [(point -1.0 0.0 0.0) (point 1.0 0.0 0.0) (point 1.0 1.0 0.0)]]
-                   [[(point -1.0 1.0 0.0) (point 1.0 0.0 0.0) (point 1.0 1.0 0.0)]]])
+          triangles-to-points (fn [triangles] (mapv #(vector (:p1 %) (:p2 %) (:p3 %) (:n1 %) (:n2 %) (:n3 %)) triangles))]
+      (is (= (set [[[(point 1.0 0.0 0.0) (point 1.0 1.0 0.0) (point -1.0 1.0 0.0)
+                     nil nil nil]]
+                   [[(point -1.0 1.0 0.0) (point -1.0 0.0 0.0) (point 1.0 0.0 0.0)
+                     (vektor 0.0 1.0 0.0) (vektor -1.0 0.0 0.0) (vektor 1.0 0.0 0.0)]
+                    [(point -1.0 0.0 0.0) (point 1.0 0.0 0.0) (point 1.0 1.0 0.0)
+                     nil nil nil]]
+                   [[(point -1.0 1.0 0.0) (point 1.0 0.0 0.0) (point 1.0 1.0 0.0)
+                     nil nil nil]]])
              (set [(triangles-to-points (get-in group [:children 0 :children]))
                    (triangles-to-points (get-in group [:children 1 :children]))
                    (triangles-to-points (get-in group [:children 2 :children]))]))))))
