@@ -39,13 +39,14 @@
              :groups         {}
              :ignored-lines  []}
             (filter (comp not str/blank?) (str/split-lines file)))))
-(defn obj-to-group [parsed-file]
+(defn obj-to-group [parsed-file & {:keys [transform]}]
   (letfn [(make-triangle [t]
             (let [[p1 p2 p3] ((juxt :p1 :p2 :p3) t)
                   [n1 n2 n3] ((juxt :n1 :n2 :n3) t)]
               (if (and n1 n2 n3)
                 (smooth-triangle p1 p2 p3 n1 n2 n3)
                 (triangle p1 p2 p3))))]
-    (group :children (->> (concat [(:default-group parsed-file)] (vals (:groups parsed-file)))
+    (group :transform transform
+           :children (->> (concat [(:default-group parsed-file)] (vals (:groups parsed-file)))
                           (mapv (fn [obj-group] (mapv make-triangle obj-group)))
                           (mapv #(group :children %))))))
