@@ -2,13 +2,13 @@
   (:require [ray-tracer-challenge.logic.shapes :refer :all]))
 
 (declare filter-intersections)
-(defn csg [operation left right]
+(defn csg [operation left right & {:keys [transform]}]
   (letfn [(local-intersect [csg local-ray] (->> (:children csg)
                                                 (mapcat #(intersect % local-ray))
                                                 (sort-by :t)
                                                 (filter-intersections csg)))
           (local-normal-at [_ _ _] (throw (UnsupportedOperationException. "local-normal-at not supported for csg")))]
-    (-> (shape :csg nil nil local-intersect local-normal-at)
+    (-> (shape :csg transform nil local-intersect local-normal-at)
         (assoc :operation operation :left left :right right :children [left right]))))
 (defn intersection-allowed? [operation left-hit inside-left inside-right]
   (condp = operation
